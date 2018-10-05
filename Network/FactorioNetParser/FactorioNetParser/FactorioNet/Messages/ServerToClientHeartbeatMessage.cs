@@ -455,6 +455,289 @@ namespace FactorioNetParser.FactorioNet.Messages
         }
     }
 
+    class ArithmeticCombinatorParameters : IReadable<ArithmeticCombinatorParameters>
+    {
+        public SignalId FirstSignalId;
+        public SignalId SecondSignalId;
+        public SignalId OutputSignalId;
+        public int SecondConstant;
+        public byte Operation;
+        public bool SecondSignalIsConstant;
+        public int FirstConstant;
+        public bool FirstSignalIsConstant;
+
+        public ArithmeticCombinatorParameters Load(BinaryReader reader)
+        {
+            FirstSignalId = new SignalId(reader);
+            SecondSignalId = new SignalId(reader);
+            OutputSignalId = new SignalId(reader);
+            SecondConstant = reader.ReadInt32();
+            Operation = reader.ReadByte();
+            SecondSignalIsConstant = reader.ReadBoolean();
+            FirstConstant = reader.ReadInt32();
+            FirstSignalIsConstant = reader.ReadBoolean();
+            return this;
+        }
+
+        public ArithmeticCombinatorParameters(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public ArithmeticCombinatorParameters()
+        {
+
+        }
+    }
+
+    class DeciderCombinatorParameters : IReadable<DeciderCombinatorParameters>
+    {
+        public SignalId FirstSignalId;
+        public SignalId SecondSignalId;
+        public SignalId OutputSignalId;
+        public int SecondConstant;
+        public byte Comparator;
+        public bool CopyCountFromInput;
+        public bool FirstSignalIsConstant;
+
+        public DeciderCombinatorParameters Load(BinaryReader reader)
+        {
+            FirstSignalId = new SignalId(reader);
+            SecondSignalId = new SignalId(reader);
+            OutputSignalId = new SignalId(reader);
+            SecondConstant = reader.ReadInt32();
+            Comparator = reader.ReadByte();
+            CopyCountFromInput = reader.ReadBoolean();
+            FirstSignalIsConstant = reader.ReadBoolean();
+            return this;
+        }
+
+        public DeciderCombinatorParameters(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public DeciderCombinatorParameters()
+        {
+        }
+    }
+
+    class ProgrammableSpeakerAlertParameters : IReadable<ProgrammableSpeakerAlertParameters>
+    {
+        public bool ShowAlert;
+        public bool ShowOnMap;
+        public SignalId IconSignalId;
+        public string AlertMessage;
+
+        public ProgrammableSpeakerAlertParameters Load(BinaryReader reader)
+        {
+            ShowAlert = reader.ReadBoolean();
+            ShowOnMap = reader.ReadBoolean();
+            IconSignalId = new SignalId(reader);
+            AlertMessage = reader.ReadComplexString();
+            return this;
+        }
+
+        public ProgrammableSpeakerAlertParameters(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public ProgrammableSpeakerAlertParameters()
+        {
+        }
+    }
+
+    class BuildTerrainParameters : IReadable<BuildTerrainParameters>
+    {
+        public bool CreatedByMoving;
+        public byte Size;
+        public bool ShiftBuild;
+        public bool SkipFogOfWar;
+
+        public BuildTerrainParameters Load(BinaryReader reader)
+        {
+            CreatedByMoving = reader.ReadBoolean();
+            Size = reader.ReadByte();
+            ShiftBuild = reader.ReadBoolean();
+            SkipFogOfWar = reader.ReadBoolean();
+            return this;
+        }
+
+        public BuildTerrainParameters(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public BuildTerrainParameters()
+        {
+        }
+    }
+
+    class TrainWaitCondition : IReadable<TrainWaitCondition>
+    {
+        public byte Action;
+        public byte AddType;
+        public uint ScheldueIndex;
+        public uint ConditionIndex;
+
+        public TrainWaitCondition Load(BinaryReader reader)
+        {
+            Action = reader.ReadByte();
+            AddType = reader.ReadByte();
+            ScheldueIndex = reader.ReadUInt32();
+            ConditionIndex = reader.ReadUInt32();
+            return this;
+        }
+
+        public TrainWaitCondition(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public TrainWaitCondition()
+        {
+        }
+    }
+
+    class TrainWaitConditionData : IReadable<TrainWaitConditionData>
+    {
+        public uint ScheldueIndex;
+        public uint ConditionIndex;
+        public byte ConditionType;
+        public byte ConditionCompareType;
+        public uint ConditionTicks;
+
+        public TrainWaitConditionData Load(BinaryReader reader)
+        {
+            ScheldueIndex = reader.ReadUInt32();
+            ConditionIndex = reader.ReadUInt32();
+            ConditionType = reader.ReadByte();
+            ConditionCompareType = reader.ReadByte();
+            ConditionTicks = reader.ReadUInt32();
+            return this;
+        }
+
+        public TrainWaitConditionData(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public TrainWaitConditionData()
+        {
+        }
+    }
+
+    class ExtendedBitBuffer : IReadable<ExtendedBitBuffer>
+    {
+        public uint[] Data;
+        public uint Bits;
+
+        public ExtendedBitBuffer Load(BinaryReader reader)
+        {
+            var tValue = reader.ReadVarInt();
+            Data = new uint[tValue >> 5];
+            for (var i = 0; i < Data.Length; i++)
+                Data[i] = reader.ReadUInt32();
+            if ((tValue & 0x1F) > 0)
+                Bits = reader.ReadUInt32();
+            return this;
+        }
+
+        public ExtendedBitBuffer(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public ExtendedBitBuffer()
+        {
+        }
+    }
+
+    class BuildRailData : IReadable<BuildRailData>
+    {
+        public byte Mode;
+        public int StartX;
+        public int StartY;
+        public Direction Direction;
+        public ExtendedBitBuffer Buffer;
+        public bool AlternativeBuild;
+
+        public BuildRailData Load(BinaryReader reader)
+        {
+            Mode = reader.ReadByte();
+            StartX = reader.ReadInt32();
+            StartY = reader.ReadInt32();
+            Direction = new Direction(reader);
+            Buffer = new ExtendedBitBuffer(reader);
+            AlternativeBuild = reader.ReadBoolean();
+            return this;
+        }
+
+        public BuildRailData(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public BuildRailData()
+        {
+        }
+    }
+
+    class InfinityContainerFilterItemData : IReadable<InfinityContainerFilterItemData>
+    {
+        public ushort ItemId;
+        public byte Mode;
+        public ushort FilterIndex;
+        public uint Count;
+
+        public InfinityContainerFilterItemData Load(BinaryReader reader)
+        {
+            ItemId = reader.ReadUInt16();
+            Mode = reader.ReadByte();
+            FilterIndex = reader.ReadUInt16();
+            Count = reader.ReadUInt32();
+            return this;
+        }
+
+        public InfinityContainerFilterItemData(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public InfinityContainerFilterItemData()
+        {
+        }
+    }
+
+    class EditPermissionGroupParameters : IReadable<EditPermissionGroupParameters>
+    {
+        public int GroupId;
+        public ushort PlayerIndex;
+        public ushort ActionIndex;
+        public string NewGroupName;
+        public byte Type;
+
+        public EditPermissionGroupParameters Load(BinaryReader reader)
+        {
+            GroupId = reader.ReadVarInt();
+            PlayerIndex = reader.ReadUInt16();
+            ActionIndex = reader.ReadUInt16();
+            NewGroupName = reader.ReadComplexString();
+            Type = reader.ReadByte();
+            return this;
+        }
+
+        public EditPermissionGroupParameters(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public EditPermissionGroupParameters()
+        {
+        }
+    }
+
     class InputAction
     {
         public byte Action;
@@ -731,7 +1014,7 @@ namespace FactorioNetParser.FactorioNet.Messages
                     Add(reader.ReadUInt64());
                     break;
                 case 0x84:
-                    Add(InfinityContainerFilterItemData());
+                    Add(new InfinityContainerFilterItemData());
                     break;
                 case 0x85:
                     Add(reader.ReadUInt32());
