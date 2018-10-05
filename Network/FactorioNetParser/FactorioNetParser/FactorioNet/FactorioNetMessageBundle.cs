@@ -8,6 +8,7 @@ namespace FactorioNetParser.FactorioNet
     {
         private readonly SortedList<short, FactorioNetMessage> bundleMessages = new SortedList<short, FactorioNetMessage>();
         private int needCount = -1;
+
         public bool HandleBundleMessage(FactorioNetMessage message)
         {
             if (needCount == bundleMessages.Count) return true;
@@ -21,14 +22,10 @@ namespace FactorioNetParser.FactorioNet
         public FactorioNetMessage GetOverallMessage()
         {
             if (needCount != bundleMessages.Count) return null;
-            int overallsize = 0;
-            foreach(FactorioNetMessage netmsg in bundleMessages.Values)
-            {
-                overallsize += netmsg.PacketBytes.Length;
-            }
-            byte[] bytes = new byte[overallsize];
-            int arrayptr = 0;
-            foreach(FactorioNetMessage netmsg in bundleMessages.Values)
+            var overallsize = bundleMessages.Values.Sum(netmsg => netmsg.PacketBytes.Length);
+            var bytes = new byte[overallsize];
+            var arrayptr = 0;
+            foreach (var netmsg in bundleMessages.Values)
             {
                 Array.Copy(netmsg.PacketBytes, 0, bytes, arrayptr, netmsg.PacketBytes.Length);
                 arrayptr += netmsg.PacketBytes.Length;

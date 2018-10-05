@@ -60,9 +60,9 @@ namespace FactorioNetParser.FactorioNet
 
         public byte[] GetPacket()
         {
-            MemoryStream ms = new MemoryStream();
-            BinaryWriter stream = new BinaryWriter(ms);
-            bool isReliable = (Type >= 2 && Type <= 5);
+            var ms = new MemoryStream();
+            var stream = new BinaryWriter(ms);
+            var isReliable = (Type >= 2 && Type <= 5);
             if (IsFragmented)
                 Type |= 0b01000000;
             if (IsLastFragment)

@@ -52,8 +52,51 @@ namespace FactorioNetParser.FactorioNet
 
         private static void HandleMessage(PacketType type, byte[] data, Side side)
         {
-            if (type == PacketType.ServerToClientHeartbeat)
-                new ServerToClientHeartbeatMessage(new BinaryReader(new MemoryStream(data)));
+            switch (type) {
+                case PacketType.ServerToClientHeartbeat:
+                    new ServerToClientHeartbeatMessage(new BinaryReader(new MemoryStream(data)));
+                    break;
+                case PacketType.ClientToServerHeartbeat:
+                    new ClientToServerHeartbeatMessage(new BinaryReader(new MemoryStream(data)));
+                    break;
+                case PacketType.Ping:
+                    break;
+                case PacketType.PingReply:
+                    break;
+                case PacketType.ConnectionRequest:
+                    break;
+                case PacketType.ConnectionRequestReply:
+                    break;
+                case PacketType.ConnectionRequestReplyConfirm:
+                    break;
+                case PacketType.ConnectionAcceptOrDeny:
+                    break;
+                case PacketType.GetOwnAddress:
+                    break;
+                case PacketType.GetOwnAddressReply:
+                    break;
+                case PacketType.NatPunchRequest:
+                    break;
+                case PacketType.NatPunch:
+                    break;
+                case PacketType.TransferBlockRequest:
+                    break;
+                case PacketType.TransferBlock:
+                    break;
+                case PacketType.RequestForHeartbeatWhenDisconnecting:
+                    break;
+                case PacketType.LanBroadcast:
+                    break;
+                case PacketType.GameInformationRequest:
+                    break;
+                case PacketType.GameInformationRequestReply:
+                    break;
+                case PacketType.Empty:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+
             //Console.WriteLine($"Got packet {type} from {side} with size of {data.Length}");
         }
     }
