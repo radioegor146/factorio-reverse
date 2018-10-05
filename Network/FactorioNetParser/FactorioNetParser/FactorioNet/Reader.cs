@@ -110,5 +110,31 @@ namespace FactorioNetParser.FactorioNet
                 array[i] = read(stream);
             return array;
         }
+
+        public delegate void SetToStream<in T>(BinaryWriter reader, T o);
+        public static void WriteArray<T>(this BinaryWriter stream, T[] data) where T : IWritable<T>
+        {
+            stream.WriteVarInt(data.Length);
+            for (int i = 0; i < data.Length; i++)
+                data[i].Write(stream);
+        }
+        public static void WriteArray<T>(this BinaryWriter stream, T[] data, SetToStream<T> write)
+        {
+            stream.WriteVarInt(data.Length);
+            for (int i = 0; i < data.Length; i++)
+                write(stream, data[i]);
+        }
+        public static void WriteSimpleArray<T>(this BinaryWriter stream, T[] data) where T : IWritable<T>
+        {
+            stream.WriteVarShort((short)data.Length);
+            for (int i = 0; i < data.Length; i++)
+                data[i].Write(stream);
+        }
+        public static void WriteSimpleArray<T>(this BinaryWriter stream, T[] data, SetToStream<T> write)
+        {
+            stream.WriteVarShort((short)data.Length);
+            for (int i = 0; i < data.Length; i++)
+                write(stream, data[i]);
+        }
     }
 }
