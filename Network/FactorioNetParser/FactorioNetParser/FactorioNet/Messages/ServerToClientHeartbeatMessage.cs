@@ -1331,7 +1331,7 @@ namespace FactorioNetParser.FactorioNet.Messages
         public byte DeserializationMask;
         public int SequenceNumber;
         public TickClosure[] TickClosures;
-        public Tuple<SynchronizerAction, uint>[] SynchronizerActions;
+        public Tuple<SynchronizerAction, ushort>[] SynchronizerActions;
         public uint[] RequestsForHeartbeat;
 
         public ServerToClientHeartbeatMessage Load(BinaryReader reader)
@@ -1351,10 +1351,10 @@ namespace FactorioNetParser.FactorioNet.Messages
                     TickClosures = reader.ReadArray((x) => new TickClosure(x, loadTickOnly));
                 }
             }
-
+            
             if ((DeserializationMask & 0x10) > 0)
             {
-                SynchronizerActions = reader.ReadArray((x) => Tuple.Create(new SynchronizerAction(x), x.ReadUInt32()));
+                SynchronizerActions = reader.ReadArray((x) => Tuple.Create(new SynchronizerAction(x), x.ReadUInt16()));
             }
 
             if ((DeserializationMask & 0x01) > 0)
