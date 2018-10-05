@@ -734,6 +734,36 @@ namespace FactorioNetParser.FactorioNet.Messages
         }
 
         public EditPermissionGroupParameters()
+        { 
+        }
+    }
+
+    class ChooseElemId : IReadable<ChooseElemId>
+    {
+        public ushort ItemId;
+        public ushort EntityId;
+        public ushort TileId;
+        public ushort FluidId;
+        public ushort RecipeId;
+        public SignalId SignalId;
+
+        public ChooseElemId Load(BinaryReader reader)
+        {
+            ItemId = reader.ReadUInt16();
+            EntityId = reader.ReadUInt16();
+            TileId = reader.ReadUInt16();
+            FluidId = reader.ReadUInt16();
+            RecipeId = reader.ReadUInt16();
+            SignalId = new SignalId(reader);
+            return this;
+        }
+
+        public ChooseElemId(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public ChooseElemId()
         {
         }
     }
@@ -1035,7 +1065,7 @@ namespace FactorioNetParser.FactorioNet.Messages
                     break;
                 case 0x8A:
                     Add(new GuiChangedData(reader));
-                    Add(new ChooseElemID(reader));
+                    Add(new ChooseElemId(reader));
                     break;
                 case 0x8B:
                     //TODO WTF with this packet
@@ -1146,7 +1176,7 @@ namespace FactorioNetParser.FactorioNet.Messages
             var tCount = reader.ReadVarInt();
             var inputActionsCount = tCount >> 1;
             var shouldReadFragments = (tCount & 0x01) > 0;
-            InputActions = new InputAction[reader.ReadVarInt()];
+            InputActions = new InputAction[inputActionsCount];
             for (var i = 0; i < InputActions.Length; i++)
                 InputActions[i] = new InputAction(reader);
             if (!shouldReadFragments)
