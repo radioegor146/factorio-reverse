@@ -7,7 +7,7 @@ namespace FactorioNetParser.FactorioNet.Messages
         public byte DeserializationMask;
         public int SequenceNumber;
         public TickClosure[] TickClosures;
-        public uint NextReceiveServerTickClosure;
+        public int NextReceiveServerTickClosure;
         public SynchronizerAction[] SynchronizerActions;
         public uint[] RequestsForHeartbeat;
 
@@ -29,7 +29,7 @@ namespace FactorioNetParser.FactorioNet.Messages
                 }
             }
 
-            NextReceiveServerTickClosure = reader.ReadUInt32();
+            NextReceiveServerTickClosure = reader.ReadInt32();
 
             if ((DeserializationMask & 0x10) > 0)
             {
