@@ -285,8 +285,8 @@ namespace FactorioNetParser.FactorioNet.Messages
 
         public AddressToUsernameMapping Load(BinaryReader reader)
         {
-            Username = Reader.ReadString(reader);
-            Address = Reader.ReadString(reader);
+            Username = reader.ReadFactorioString();
+            Address = reader.ReadFactorioString();
             return this;
         }
     }
@@ -400,7 +400,7 @@ namespace FactorioNetParser.FactorioNet.Messages
                 case 2:
                 case 3:
                 case 4:
-                    Name = Reader.ReadString(reader);
+                    Name = reader.ReadFactorioString();
                     break;
                 default:
                     throw new IOException("Wrong setting type");
@@ -418,7 +418,7 @@ namespace FactorioNetParser.FactorioNet.Messages
                     Value = reader.ReadInt64();
                     break;
                 case 4:
-                    Value = Reader.ReadString(reader);
+                    Value = reader.ReadFactorioString();
                     break;
                 default:
                     throw new IOException("Wrong setting type");

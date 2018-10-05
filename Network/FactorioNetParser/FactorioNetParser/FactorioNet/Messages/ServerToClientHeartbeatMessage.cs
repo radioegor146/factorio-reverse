@@ -313,7 +313,7 @@ namespace FactorioNetParser.FactorioNet.Messages
         {
             Id = reader.ReadUInt16();
             NewHash = reader.ReadBytes(20);
-            NewLabel = Reader.ReadString(reader);
+            NewLabel = reader.ReadFactorioString();
             return this;
         }
     }
@@ -343,7 +343,7 @@ namespace FactorioNetParser.FactorioNet.Messages
             ItemId = reader.ReadUInt16();
             IsBook = reader.ReadBoolean();
             BlueprintIcons = reader.ReadArray<SignalId>();
-            Label = Reader.ReadString(reader);
+            Label = reader.ReadFactorioString();
             AddInBook = reader.ReadUInt16();
             if (IsBook)
                 PreviewsInBook = reader.ReadArray<SingleRecordDataInBook>();
@@ -373,7 +373,7 @@ namespace FactorioNetParser.FactorioNet.Messages
 
             Hash = reader.ReadBytes(20);
             BlueprintIcons = reader.ReadArray<SignalId>();
-            Label = Reader.ReadString(reader);
+            Label = reader.ReadFactorioString();
             return this;
         }
     }
@@ -395,7 +395,7 @@ namespace FactorioNetParser.FactorioNet.Messages
         {
             PeerId = (ushort) reader.ReadVarShort();
             ForceId = reader.ReadByte();
-            Username = Reader.ReadString(reader);
+            Username = reader.ReadFactorioString();
             return this;
         }
     }
@@ -517,7 +517,7 @@ namespace FactorioNetParser.FactorioNet.Messages
             ShowAlert = reader.ReadBoolean();
             ShowOnMap = reader.ReadBoolean();
             IconSignalId = new SignalId(reader);
-            AlertMessage = Reader.ReadString(reader);
+            AlertMessage = reader.ReadFactorioString();
             return this;
         }
     }
@@ -692,7 +692,7 @@ namespace FactorioNetParser.FactorioNet.Messages
             GroupId = reader.ReadVarInt();
             PlayerIndex = reader.ReadUInt16();
             ActionIndex = reader.ReadUInt16();
-            NewGroupName = Reader.ReadString(reader);
+            NewGroupName = reader.ReadFactorioString();
             Type = reader.ReadByte();
             return this;
         }
@@ -726,9 +726,194 @@ namespace FactorioNetParser.FactorioNet.Messages
         }
     }
 
+    public enum InputActionType : byte
+    {
+        Nothing,
+        StopWalking,
+        BeginMining,
+        StopMining,
+        ToggleDriving,
+        OpenGui,
+        CloseGui,
+        OpenCharacterGui,
+        ConnectRollingStock,
+        DisconnectRollingStock,
+        SelectedEntityCleared,
+        CleanCursorStack,
+        ResetAssemblingMachine,
+        OpenTechnologyGui,
+        LaunchRocket,
+        ChangeActiveQuickBar,
+        OpenBlueprintLibraryGui,
+        OpenProductionGui,
+        OpenKillsGui,
+        StopRepair,
+        CancelNewBlueprint,
+        CloseBlueprintRecord,
+        CopyEntitySettings,
+        PasteEntitySettings,
+        DestroyOpenedItem,
+        ToggleShowEntityInfo,
+        SingleplayerInit,
+        MultiplayerInit,
+        SwitchToRenameStopGui,
+        OpenBonusGui,
+        OpenTrainsGui,
+        OpenAchievementsGui,
+        OpenTutorialsGui,
+        CycleBlueprintBookForwards,
+        CycleBlueprintBookBackwards,
+        StopMovementInTheNextTick,
+        ToggleEnableVehicleLogisticsWhileMoving,
+        ToggleDeconstructionItemEntityFilterMode,
+        ToggleDeconstructionItemTileFilterMode,
+        OpenLogisticGui,
+        CancelDropBlueprintRecord,
+        DropItem,
+        BuildItem,
+        StartWalking,
+        BeginMiningTerrain,
+        ChangeRidingState,
+        OpenItem,
+        OpenModItem,
+        OpenEquipment,
+        CursorTransfer,
+        CursorSplit,
+        StackTransfer,
+        InventoryTransfer,
+        CheckCrcHeuristic,
+        Craft,
+        WireDragging,
+        ChangeShootingState,
+        SetupAssemblingMachine,
+        SelectedEntityChanged,
+        SmartPipette,
+        StackSplit,
+        InventorySplit,
+        CancelCraft,
+        SetFilter,
+        CheckCrc,
+        SetCircuitCondition,
+        SetSignal,
+        StartResearch,
+        SetLogisticFilterItem,
+        SetLogisticFilterSignal,
+        SetCircuitModeOfOperation,
+        GuiClick,
+        WriteToConsole,
+        MarketOffer,
+        EditTrainSchedule,
+        ChangeTrainStopStation,
+        ChangeActiveItemGroupForCrafting,
+        GuiTextChanged,
+        GuiCheckedStateChanged,
+        GuiSelectionStateChanged,
+        GuiValueChanged,
+        PlaceEquipment,
+        TakeEquipment,
+        UseAbility,
+        UseItem,
+        UseArtilleryRemote,
+        SetInventoryBar,
+        ChangeActiveItemGroupForFilters,
+        MoveOnZoom,
+        StartRepair,
+        Deconstruct,
+        SelectBlueprintEntities,
+        AltSelectBlueprintEntities,
+        SetupBlueprint,
+        SetupSingleBlueprintRecord,
+        SetSingleBlueprintRecordIcon,
+        OpenBlueprintRecord,
+        CloseBlueprintBook,
+        ChangeSingleBlueprintRecordLabel,
+        GrabBlueprintRecord,
+        DropBlueprintRecord,
+        DeleteBlueprintRecord,
+        CreateBlueprintLike,
+        CreateBlueprintLikeStackTransfer,
+        UpdateBlueprintShelf,
+        TransferBlueprint,
+        TransferBlueprintImmediately,
+        ChangeBlueprintBookRecordLabel,
+        RemoveCables,
+        ExportBlueprint,
+        ImportBlueprint,
+        PlayerJoinGame,
+        CancelDeconstruct,
+        ChangeArithmeticCombinatorParameters,
+        ChangeDeciderCombinatorParameters,
+        ChangeProgrammableSpeakerParameters,
+        ChangeProgrammableSpeakerAlertParameters,
+        ChangeProgrammableSpeakerCircuitParameters,
+        BuildTerrain,
+        ChangeTrainWaitCondition,
+        ChangeTrainWaitConditionData,
+        CustomInput,
+        ChangeItemLabel,
+        BuildRail,
+        CancelResearch,
+        OpenTrainStationGui,
+        SelectArea,
+        AltSelectArea,
+        ServerCommand,
+        ClearSelectedBlueprint,
+        ClearSelectedDeconstructionItem,
+        SetLogisticTrashFilterItem,
+        SetInfinityContainerFilterItem,
+        ModSettingsChanged,
+        SetEntityEnergyProperty,
+        EditCustomTag,
+        EditPermissionGroup,
+        ImportBlueprintString,
+        GuiElemChanged,
+        BlueprintTransferQueueUpdate,
+        DragTrainSchedule,
+        DragTrainWaitCondition,
+        SelectItem,
+        SelectEntitySlot,
+        SelectTileSlot,
+        DisplayResolutionChanged,
+        DisplayScaleChanged,
+        SetSplitterPriority,
+        ChangePickingState,
+        SelectedEntityChangedVeryClose,
+        SelectedEntityChangedVeryClosePrecise,
+        SelectedEntityChangedRelative,
+        SelectedEntityChangedBasedOnUnitNumber,
+        ShortcutQuickBarTransfer,
+        SelectGun,
+        SetAutosortInventory,
+        SetAutoLaunchRocket,
+        SwitchConstantCombinatorState,
+        SwitchPowerSwitchState,
+        SwitchConnectToLogisticNetwork,
+        SetBehaviorMode,
+        FastEntityTransfer,
+        RotateEntity,
+        FastEntitySplit,
+        SetTrainStopped,
+        ChangeControllerSpeed,
+        SetAllowCommands,
+        SetResearchFinishedStopsGame,
+        SetInserterMaxStackSize,
+        OpenTrainGui,
+        SetEntityColor,
+        SetDeconstructionItemTreesAndRocksOnly,
+        SetDeconstructionItemTileSelectionMode,
+        DropToBlueprintBook,
+        DeleteCustomTag,
+        DeletePermissionGroup,
+        AddPermissionGroup,
+        SetInfinityContainerRemoveUnfilteredItems,
+        SetCarWeaponsControl,
+        SetRequestFromBuffers,
+        PlayerLeaveGame
+    }
+
     internal class InputAction : IReadable<InputAction>
     {
-        public byte Action;
+        public InputActionType Action;
         public List<object> Data = new List<object>();
         public short PlayerIndex;
 
@@ -741,349 +926,352 @@ namespace FactorioNetParser.FactorioNet.Messages
 
         public InputAction Load(BinaryReader reader)
         {
-            Action = reader.ReadByte();
+            Action = (InputActionType)reader.ReadByte();
             PlayerIndex = reader.ReadVarShort();
             switch (Action)
             {
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                case 8:
-                case 9:
-                case 0xA:
-                case 0xB:
-                case 0xC:
-                case 0xD:
-                case 0xE:
-                case 0xF:
-                case 0x10:
-                case 0x11:
-                case 0x12:
-                case 0x13:
-                case 0x14:
-                case 0x15:
-                case 0x16:
-                case 0x17:
-                case 0x18:
-                case 0x19:
-                case 0x1A:
-                case 0x1B:
-                case 0x1C:
-                case 0x1D:
-                case 0x1E:
-                case 0x1F:
-                case 0x20:
-                case 0x21:
-                case 0x22:
-                case 0x23:
-                case 0x24:
-                case 0x25:
-                case 0x26:
-                case 0x27:
-                case 0x28:
+                case InputActionType.Nothing:
+                case InputActionType.StopWalking:
+                case InputActionType.BeginMining:
+                case InputActionType.StopMining:
+                case InputActionType.ToggleDriving:
+                case InputActionType.OpenGui:
+                case InputActionType.CloseGui:
+                case InputActionType.OpenCharacterGui:
+                case InputActionType.ConnectRollingStock:
+                case InputActionType.DisconnectRollingStock:
+                case InputActionType.SelectedEntityCleared:
+                case InputActionType.CleanCursorStack:
+                case InputActionType.ResetAssemblingMachine:
+                case InputActionType.OpenTechnologyGui:
+                case InputActionType.LaunchRocket:
+                case InputActionType.ChangeActiveQuickBar:
+                case InputActionType.OpenBlueprintLibraryGui:
+                case InputActionType.OpenProductionGui:
+                case InputActionType.OpenKillsGui:
+                case InputActionType.StopRepair:
+                case InputActionType.CancelNewBlueprint:
+                case InputActionType.CloseBlueprintRecord:
+                case InputActionType.CopyEntitySettings:
+                case InputActionType.PasteEntitySettings:
+                case InputActionType.DestroyOpenedItem:
+                case InputActionType.ToggleShowEntityInfo:
+                case InputActionType.SingleplayerInit:
+                case InputActionType.MultiplayerInit:
+                case InputActionType.SwitchToRenameStopGui:
+                case InputActionType.OpenBonusGui:
+                case InputActionType.OpenTrainsGui:
+                case InputActionType.OpenAchievementsGui:
+                case InputActionType.OpenTutorialsGui:
+                case InputActionType.CycleBlueprintBookForwards:
+                case InputActionType.CycleBlueprintBookBackwards:
+                case InputActionType.StopMovementInTheNextTick:
+                case InputActionType.ToggleEnableVehicleLogisticsWhileMoving:
+                case InputActionType.ToggleDeconstructionItemEntityFilterMode:
+                case InputActionType.ToggleDeconstructionItemTileFilterMode:
+                case InputActionType.OpenLogisticGui:
+                case InputActionType.CancelDropBlueprintRecord:
                     return this;
-                case 0x29:
-                case 0x2C:
-                case 0x37:
-                case 0x3A:
-                case 0x54:
-                case 0x55:
-                case 0x59:
-                case 0x6C:
+                case InputActionType.DropItem:
+                case InputActionType.BeginMiningTerrain:
+                case InputActionType.WireDragging:
+                case InputActionType.SelectedEntityChanged:
+                case InputActionType.UseItem:
+                case InputActionType.UseArtilleryRemote:
+                case InputActionType.StartRepair:
+                case InputActionType.RemoveCables:
                     Add(new PixelPosition(reader));
                     break;
-                case 0x2A:
+                case InputActionType.BuildItem:
                     Add(new PixelPosition(reader));
                     Add(new Direction(reader));
                     Add(reader.ReadByte());
                     Add(reader.ReadByte());
                     Add(reader.ReadByte());
                     break;
-                case 0x2B:
+                case InputActionType.StartWalking:
                     Add(reader.ReadByte());
                     break;
-                case 0x2D:
+                case InputActionType.ChangeRidingState:
                     Add(new RidingState(reader));
                     break;
-                case 0x2E:
-                case 0x2F:
-                case 0x31:
-                case 0x32:
-                case 0x33:
-                case 0x34:
-                case 0x3C:
-                case 0x3D:
-                case 0x56:
-                case 0x81:
-                case 0x82:
+                case InputActionType.OpenItem:
+                case InputActionType.OpenModItem:
+                case InputActionType.CursorTransfer:
+                case InputActionType.CursorSplit:
+                case InputActionType.StackTransfer:
+                case InputActionType.InventoryTransfer:
+                case InputActionType.StackSplit:
+                case InputActionType.InventorySplit:
+                case InputActionType.SetInventoryBar:
+                case InputActionType.ClearSelectedBlueprint:
+                case InputActionType.ClearSelectedDeconstructionItem:
                     Add(new ItemStackTargetSpecification(reader));
                     break;
-                case 0x30:
+                case InputActionType.OpenEquipment:
                     Add(new PixelPosition(reader));
                     Add(reader.ReadByte());
                     break;
-                case 0x35:
-                case 0x40:
-                case 0x49:
+                case InputActionType.CheckCrcHeuristic:
+                case InputActionType.CheckCrc:
+                case InputActionType.MarketOffer:
                     Add(reader.ReadInt32());
                     Add(reader.ReadInt32());
                     break;
-                case 0x38:
+                case InputActionType.ChangeShootingState:
                     Add(reader.ReadByte());
                     Add(new PixelPosition(reader));
                     break;
-                case 0x39:
-                case 0x3B:
-                case 0x43:
-                case 0x53:
-                case 0x66:
-                case 0x67:
-                case 0x79:
-                case 0x7C:
-                case 0x3E:
-                case 0x8E:
+                case InputActionType.SetupAssemblingMachine:
+                case InputActionType.SmartPipette:
+                case InputActionType.StartResearch:
+                case InputActionType.UseAbility:
+                case InputActionType.CreateBlueprintLike:
+                case InputActionType.CreateBlueprintLikeStackTransfer:
+                case InputActionType.CustomInput:
+                case InputActionType.CancelResearch:
+                case InputActionType.CancelCraft:
+                case InputActionType.SelectItem:
                     Add(reader.ReadUInt16());
                     break;
-                case 0x8F:
+                case InputActionType.SelectEntitySlot:
                     Add(reader.ReadUInt16());
                     Add(reader.ReadUInt16());
                     break;
-                case 0x3F:
+                case InputActionType.SetFilter:
                     Add(new ItemStackTargetSpecification(reader));
                     Add(reader.ReadUInt16());
                     break;
-                case 0x41:
+                case InputActionType.SetCircuitCondition:
                     Add(reader.ReadByte());
                     Add(new CircuitCondition(reader));
                     break;
-                case 0x42:
+                case InputActionType.SetSignal:
                     Add(new SignalId(reader));
                     Add(reader.ReadUInt16());
                     break;
-                case 0x44:
-                case 0x83:
+                case InputActionType.SetLogisticFilterItem:
+                case InputActionType.SetLogisticTrashFilterItem:
                     Add(reader.ReadUInt16());
                     Add(reader.ReadUInt16());
                     Add(reader.ReadUInt32());
                     break;
-                case 0x45:
+                case InputActionType.SetLogisticFilterSignal:
                     Add(new SignalId(reader));
                     Add(reader.ReadUInt32());
                     Add(reader.ReadUInt16());
                     break;
-                case 0x46:
+                case InputActionType.SetCircuitModeOfOperation:
                     Add(reader.ReadByte());
                     Add(reader.ReadByte());
                     break;
-                case 0x47:
-                case 0x4E:
+                case InputActionType.GuiClick:
+                case InputActionType.GuiCheckedStateChanged:
                     Add(new GuiChangedData(reader));
                     break;
-                case 0x48:
-                case 0x4B:
-                case 0x62:
-                case 0x7A:
-                case 0x7D:
-                case 0x89:
-                    Add(Reader.ReadString(reader));
+                case InputActionType.WriteToConsole:
+                case InputActionType.ChangeTrainStopStation:
+                case InputActionType.ChangeSingleBlueprintRecordLabel:
+                case InputActionType.ChangeItemLabel:
+                case InputActionType.OpenTrainStationGui:
+                case InputActionType.ImportBlueprintString:
+                    Add(reader.ReadFactorioString());
                     break;
-                case 0x4A:
+                case InputActionType.EditTrainSchedule:
                     Add(reader.ReadByte());
                     Add(reader.ReadByte());
-                    Add(Reader.ReadString(reader));
+                    Add(reader.ReadFactorioString());
                     Add(reader.ReadUInt32());
                     break;
-                case 0x4C:
-                case 0x57:
-                case 0xB4:
+                case InputActionType.ChangeActiveItemGroupForCrafting:
+                case InputActionType.ChangeActiveItemGroupForFilters:
+                case InputActionType.PlayerLeaveGame:
                     Add(reader.ReadByte());
                     break;
-                case 0x4D:
+                case InputActionType.GuiTextChanged:
                     Add(new GuiChangedData(reader));
-                    Add(Reader.ReadString(reader));
+                    Add(reader.ReadFactorioString());
                     break;
-                case 0x4f:
+                case InputActionType.GuiSelectionStateChanged:
                     Add(new GuiChangedData(reader));
                     Add(reader.ReadInt32());
                     break;
-                case 0x50:
+                case InputActionType.GuiValueChanged:
                     Add(new GuiChangedData(reader));
                     Add(reader.ReadInt64());
                     break;
-                case 0x51:
-                case 0x52:
+                case InputActionType.PlaceEquipment:
+                case InputActionType.TakeEquipment:
                     Add(new PixelPosition(reader));
                     Add(reader.ReadByte());
                     break;
-                case 0x58:
+                case InputActionType.MoveOnZoom:
                     Add(new Vector(reader));
                     break;
-                case 0x5A:
-                case 0x5B:
-                case 0x5C:
-                case 0x70:
-                case 0x7E:
-                case 0x7F:
+                case InputActionType.Deconstruct:
+                case InputActionType.SelectBlueprintEntities:
+                case InputActionType.AltSelectBlueprintEntities:
+                case InputActionType.CancelDeconstruct:
+                case InputActionType.SelectArea:
+                case InputActionType.AltSelectArea:
                     Add(new PixelPosition(reader));
                     Add(new PixelPosition(reader));
                     Add(new RealOrientation(reader));
                     Add(reader.ReadUInt16());
                     Add(reader.ReadByte());
                     break;
-                case 0x5d:
-                case 0x5E:
+                case InputActionType.SetupBlueprint:
+                case InputActionType.SetupSingleBlueprintRecord:
                     Add(new SetupBlueprintData(reader));
                     break;
-                case 0x5F:
+                case InputActionType.SetSingleBlueprintRecordIcon:
                     Add(new SignalId(reader));
                     Add(reader.ReadByte());
                     break;
-                case 0x60:
-                case 0x61:
-                case 0x63:
-                case 0x65:
-                case 0x6E:
+                case InputActionType.OpenBlueprintRecord:
+                case InputActionType.CloseBlueprintBook:
+                case InputActionType.GrabBlueprintRecord:
+                case InputActionType.DeleteBlueprintRecord:
+                case InputActionType.ImportBlueprint:
                     Add(new BlueprintRecordId(reader));
                     break;
-                case 0x64:
-                case 0x6D:
+                case InputActionType.DropBlueprintRecord:
+                case InputActionType.ExportBlueprint:
                     Add(reader.ReadUInt16());
                     Add(new BlueprintRecordId(reader));
                     break;
-                case 0x68:
+                case InputActionType.UpdateBlueprintShelf:
                     Add(new UpdateBlueprintShelfData(reader));
                     break;
-                case 0x69:
-                case 0x6A:
-                case 0x6B:
+                case InputActionType.TransferBlueprint:
+                case InputActionType.TransferBlueprintImmediately:
+                case InputActionType.ChangeBlueprintBookRecordLabel:
                     Add(new BlueprintRecordId(reader));
-                    Add(Reader.ReadString(reader));
+                    Add(reader.ReadFactorioString());
                     break;
-                case 0x6F:
+                case InputActionType.PlayerJoinGame:
                     Add(new PlayerJoinGameData(reader));
                     break;
-                case 0x71:
+                case InputActionType.ChangeArithmeticCombinatorParameters:
                     Add(new ArithmeticCombinatorParameters(reader));
                     break;
-                case 0x72:
+                case InputActionType.ChangeDeciderCombinatorParameters:
                     Add(new DeciderCombinatorParameters(reader));
                     break;
-                case 0x73:
+                case InputActionType.ChangeProgrammableSpeakerParameters:
                     Add(reader.ReadInt64());
                     Add(reader.ReadByte());
                     Add(reader.ReadByte());
                     break;
-                case 0x74:
+                case InputActionType.ChangeProgrammableSpeakerAlertParameters:
                     Add(new ProgrammableSpeakerAlertParameters(reader));
                     break;
-                case 0x75:
+                case InputActionType.ChangeProgrammableSpeakerCircuitParameters:
                     Add(reader.ReadByte());
                     Add(reader.ReadInt32());
                     Add(reader.ReadInt32());
                     break;
-                case 0x76:
+                case InputActionType.BuildTerrain:
                     Add(new BuildTerrainParameters(reader));
                     break;
-                case 0x77:
+                case InputActionType.ChangeTrainWaitCondition:
                     Add(new TrainWaitCondition(reader));
                     break;
-                case 0x78:
+                case InputActionType.ChangeTrainWaitConditionData:
                     Add(new TrainWaitConditionData(reader));
                     break;
-                case 0x7B:
+                case InputActionType.BuildRail:
                     Add(new BuildRailData(reader));
                     break;
-                case 0x80:
-                    Add(Reader.ReadString(reader));
+                case InputActionType.ServerCommand:
+                    Add(reader.ReadFactorioString());
                     Add(reader.ReadUInt32());
                     Add(reader.ReadUInt64());
                     break;
-                case 0x84:
+                case InputActionType.SetInfinityContainerFilterItem:
                     Add(new InfinityContainerFilterItemData());
                     break;
-                case 0x85:
+                case InputActionType.ModSettingsChanged:
                     Add(reader.ReadUInt32());
                     // TODO fuck mod settings
-                    throw new NotImplementedException();
-                case 0x86:
+                    throw new NotImplementedException("fuck mod settings");
+                case InputActionType.SetEntityEnergyProperty:
                     Add(reader.ReadByte());
                     Add(reader.ReadInt64());
                     break;
-                case 0x87:
+                case InputActionType.EditCustomTag:
                     Add(reader.ReadInt32());
-                    Add(Reader.ReadString(reader));
+                    Add(reader.ReadFactorioString());
                     Add(new SignalId(reader));
                     Add(new PixelPosition(reader));
                     break;
-                case 0x88:
+                case InputActionType.EditPermissionGroup:
                     Add(new EditPermissionGroupParameters(reader));
                     break;
-                case 0x8A:
+                case InputActionType.GuiElemChanged:
                     Add(new GuiChangedData(reader));
                     Add(new ChooseElemId(reader));
                     break;
-                case 0x8B:
+                case InputActionType.BlueprintTransferQueueUpdate:
                     //TODO WTF with this packet
-                    throw new NotImplementedException();
-                case 0x8C:
-                case 0x91:
+                    throw new NotImplementedException("WTF with this packet");
+                case InputActionType.DragTrainSchedule:
+                case InputActionType.DisplayResolutionChanged:
                     Add(new PixelPosition(reader));
                     break;
-                case 0x8D:
+                case InputActionType.DragTrainWaitCondition:
                     Add(new PixelPosition(reader));
                     Add(reader.ReadInt32());
                     break;
-                case 0x90:
+                case InputActionType.SelectTileSlot:
                     Add(reader.ReadByte());
                     Add(reader.ReadInt16());
                     break;
-                case 0x92:
-                case 0xA5:
+                case InputActionType.DisplayScaleChanged:
+                case InputActionType.ChangeControllerSpeed:
                     Add(reader.ReadInt64());
                     break;
-                case 0x93:
-                case 0x94:
-                case 0x95:
-                case 0x9B:
-                case 0x9C:
-                case 0x9D:
-                case 0x9E:
-                case 0x9F:
-                case 0xA0:
-                case 0xA1:
-                case 0xA2:
-                case 0xA3:
-                case 0xA4:
-                case 0xA6:
-                case 0xA7:
-                case 0xA8:
-                case 0xAB:
-                case 0xAC:
-                case 0xB1:
-                case 0xB2:
-                case 0xB3:
+                case InputActionType.SetSplitterPriority:
+                case InputActionType.ChangePickingState:
+                case InputActionType.SelectedEntityChangedVeryClose:
+                case InputActionType.SetAutosortInventory:
+                case InputActionType.SetAutoLaunchRocket:
+                case InputActionType.SwitchConstantCombinatorState:
+                case InputActionType.SwitchPowerSwitchState:
+                case InputActionType.SwitchConnectToLogisticNetwork:
+                case InputActionType.SetBehaviorMode:
+                case InputActionType.FastEntityTransfer:
+                case InputActionType.RotateEntity:
+                case InputActionType.FastEntitySplit:
+                case InputActionType.SetTrainStopped:
+                case InputActionType.SetAllowCommands:
+                case InputActionType.SetResearchFinishedStopsGame:
+                case InputActionType.SetInserterMaxStackSize:
+                case InputActionType.SetDeconstructionItemTreesAndRocksOnly:
+                case InputActionType.SetDeconstructionItemTileSelectionMode:
+                case InputActionType.SetInfinityContainerRemoveUnfilteredItems:
+                case InputActionType.SetCarWeaponsControl:
+                case InputActionType.SetRequestFromBuffers:
                     Add(reader.ReadByte());
                     break;
-                case 0x96:
-                case 0x99:
-                case 0x9A:
-                case 0xAD:
+                case InputActionType.SelectedEntityChangedVeryClosePrecise:
+                case InputActionType.ShortcutQuickBarTransfer:
+                case InputActionType.SelectGun:
+                case InputActionType.DropToBlueprintBook:
                     Add(reader.ReadInt16());
                     break;
-                case 0x97:
-                case 0x98:
-                case 0xA9:
-                case 0xAA:
-                case 0xAE:
-                case 0xAF:
-                case 0xB0:
+                case InputActionType.SelectedEntityChangedRelative:
+                case InputActionType.SelectedEntityChangedBasedOnUnitNumber:
+                case InputActionType.OpenTrainGui:
+                case InputActionType.SetEntityColor:
+                case InputActionType.DeleteCustomTag:
+                case InputActionType.DeletePermissionGroup:
+                case InputActionType.AddPermissionGroup:
                     Add(reader.ReadInt32());
                     break;
+                case InputActionType.Craft:
+                    //TODO there is no handler for this packet o_O
+                    throw new NotImplementedException("there is no handler for this packet o_O");
                 default:
                     throw new Exception($"No such InputAction: 0x{Action:x2}");
             }
@@ -1177,36 +1365,37 @@ namespace FactorioNetParser.FactorioNet.Messages
             return this;
         }
     }
+    
+    public enum SynchronizerActionType : byte
+    {
+        GameEnd,
+        PeerDisconnect,
+        NewPeerInfo,
+        ClientChangedState,
+        ClientShouldStartSendingTickClosures,
+        MapReadyForDownload,
+        MapLoadingProgressUpdate,
+        MapSavingProgressUpdate,
+        SavingForUpdate,
+        MapDownloadingProgressUpdate,
+        CatchingUpProgressUpdate,
+        PeerDroppingProgressUpdate,
+        PlayerDesynced,
+        BeginPause,
+        EndPause,
+        SkippedTickClosure,
+        SkippedTickClosureConfirm,
+        ChangeLatency,
+        IncreasedLatencyConfirm,
+        SavingCountdown,
+        InputActionFragmentsInFlight,
+        InputActionFragmentsInFlightFinished
+    }
 
     internal class SynchronizerAction : IReadable<SynchronizerAction>
     {
-        public enum ActionType : byte
-        {
-            SimpleSynchronizer_0,
-            PeerDisconnect,
-            NewPeerInfo,
-            ClientChangedState,
-            ClientShouldStartSendingTickClosures,
-            MapReadyForDownloadAction,
-            ProgressUpdate_6,
-            ProgressUpdate_7,
-            SimpleSynchronizer_8,
-            ProgressUpdate_9,
-            ProgressUpdate_A,
-            ProgressUpdate_B,
-            SimpleSynchronizer_C,
-            SimpleSynchronizer_D,
-            SimpleSynchronizer_E,
-            SkippedTickClosure,
-            SkippedTickClosureConfirm,
-            ChangeLatency,
-            IncreasedLatencyConfirm,
-            SavingCountdown,
-            InputActionFragmentsInFlight,
-            SimpleSynchronizer_15
-        }
 
-        public ActionType Action;
+        public SynchronizerActionType Action;
 
         public List<object> Data = new List<object>();
 
@@ -1219,36 +1408,36 @@ namespace FactorioNetParser.FactorioNet.Messages
 
         public SynchronizerAction Load(BinaryReader reader)
         {
-            Action = (ActionType) reader.ReadByte();
-            switch ((byte) Action)
+            Action = (SynchronizerActionType) reader.ReadByte();
+            switch (Action)
             {
-                case 0x00:
-                case 0x08:
-                case 0x0C:
-                case 0x0D:
-                case 0x0E:
-                case 0x15:
+                case SynchronizerActionType.GameEnd:
+                case SynchronizerActionType.SavingForUpdate:
+                case SynchronizerActionType.PlayerDesynced:
+                case SynchronizerActionType.BeginPause:
+                case SynchronizerActionType.EndPause:
+                case SynchronizerActionType.InputActionFragmentsInFlightFinished:
                     break;
-                case 0x01:
-                case 0x03:
-                case 0x06:
-                case 0x07:
-                case 0x09:
-                case 0x11:
-                case 0x0A:
-                case 0x0B:
+                case SynchronizerActionType.PeerDisconnect:
+                case SynchronizerActionType.ClientChangedState:
+                case SynchronizerActionType.MapLoadingProgressUpdate:
+                case SynchronizerActionType.MapSavingProgressUpdate:
+                case SynchronizerActionType.MapDownloadingProgressUpdate:
+                case SynchronizerActionType.ChangeLatency:
+                case SynchronizerActionType.CatchingUpProgressUpdate:
+                case SynchronizerActionType.PeerDroppingProgressUpdate:
                     Add(reader.ReadByte());
                     break;
-                case 0x02:
-                    Add(Reader.ReadString(reader));
+                case SynchronizerActionType.NewPeerInfo:
+                    Add(reader.ReadFactorioString());
                     break;
-                case 0x04:
-                case 0x0F:
-                case 0x10:
-                case 0x13:
+                case SynchronizerActionType.ClientShouldStartSendingTickClosures:
+                case SynchronizerActionType.SkippedTickClosure:
+                case SynchronizerActionType.SkippedTickClosureConfirm:
+                case SynchronizerActionType.SavingCountdown:
                     Add(reader.ReadInt32());
                     break;
-                case 0x05:
+                case SynchronizerActionType.MapReadyForDownload:
                     Add(reader.ReadInt32());
                     Add(reader.ReadInt32());
                     Add(reader.ReadInt32());
@@ -1256,19 +1445,19 @@ namespace FactorioNetParser.FactorioNet.Messages
                     Add(reader.ReadInt32());
                     Add(reader.ReadByte());
                     Add(reader.ReadByte());
-                    Add(reader.ReadArray(x => Tuple.Create(Reader.ReadString(reader), reader.ReadUInt32()))
+                    Add(reader.ReadArray(x => Tuple.Create(reader.ReadFactorioString(), reader.ReadUInt32()))
                         .ToDictionary(x => x.Item1, y => y.Item2));
-                    Add(reader.ReadArray(x => Tuple.Create(Reader.ReadString(reader), new ScriptRegistrations(reader)))
+                    Add(reader.ReadArray(x => Tuple.Create(reader.ReadFactorioString(), new ScriptRegistrations(reader)))
                         .ToDictionary(x => x.Item1, y => y.Item2));
                     Add(reader.ReadArray(x =>
-                            Tuple.Create(Reader.ReadString(reader), reader.ReadArray(y => Reader.ReadString(y))))
+                            Tuple.Create(reader.ReadFactorioString(), reader.ReadArray(y => y.ReadFactorioString())))
                         .ToDictionary(x => x.Item1, y => y.Item2));
                     break;
-                case 0x12:
+                case SynchronizerActionType.IncreasedLatencyConfirm:
                     Add(reader.ReadInt32());
                     Add(reader.ReadByte());
                     break;
-                case 0x14:
+                case SynchronizerActionType.InputActionFragmentsInFlight:
                     Add(reader.ReadInt32());
                     Add(reader.ReadInt32());
                     break;

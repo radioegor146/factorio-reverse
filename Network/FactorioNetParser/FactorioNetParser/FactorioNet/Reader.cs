@@ -66,7 +66,7 @@ namespace FactorioNetParser.FactorioNet
             stream.Write(dt);
         }
 
-        public static string ReadString(this BinaryReader stream)
+        public static string ReadFactorioString(this BinaryReader stream)
         {
             var strln = ReadVarInt(stream);
             var data = new byte[strln];

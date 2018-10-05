@@ -11,6 +11,7 @@ using PcapngUtils.Pcap;
 using PcapngUtils.PcapNG;
 using FactorioNetParser.FactorioNet;
 using FactorioNetParser.FactorioNet.Messages;
+using Newtonsoft.Json;
 
 namespace FactorioNetParser
 {
@@ -28,6 +29,8 @@ namespace FactorioNetParser
                 reader.OnReadPacketEvent += Reader_OnReadPacketEvent;
                 reader.ReadPackets(new CancellationToken());
             }
+
+            File.WriteAllText("packets.json", JsonConvert.SerializeObject(FactorioPackets));
         }
 
         private static void Reader_OnReadPacketEvent(object context, PcapngUtils.Common.IPacket packet)

@@ -70,7 +70,6 @@ namespace FactorioNetParser.FactorioNet
                 case PacketType.PingReply:
                     break;
                 case PacketType.ConnectionRequest:
-
                     break;
                 case PacketType.ConnectionRequestReply:
                     break;
