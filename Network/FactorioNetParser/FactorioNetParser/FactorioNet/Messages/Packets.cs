@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text;
 
 namespace FactorioNetParser.FactorioNet.Messages
 {
@@ -6,70 +7,69 @@ namespace FactorioNetParser.FactorioNet.Messages
     {
         PacketType GetMessageType();
     }
-    public enum PacketType : byte
+
+    internal class ConnectionAcceptOrDenyMessage : IReadable<ConnectionAcceptOrDenyMessage>, IPacket
     {
-        ConnectionRequest = 2,
-        ConnectionRequestReply = 2,
-        ConnectionRequestReplyConfirm = 4,
-        ConnectionAcceptOrDeny = 5,
-        EmptyPacket = 0x12
-    }
-    class ConnectionAcceptOrDenyMessage : IReadable<ConnectionAcceptOrDenyMessage>, IPacket
-    {
-        public bool Online;
+        public string[] Admins;
+        public int AfkAutoKickInterval;
+        public bool AllowCommands;
+        public Version ApplicationVersion;
+        public int AutosaveInterval;
+        public int AutosaveSlots;
+
+        public ListItem[] Banlist;
+        public AddressToUsernameMapping[] BanlistMappings;
+        public short BuildVersion;
 
         public int ClientrequestId;
-        public byte Status;
-        public string GameName;
-        public string ServerHash;
-        public string Description;
-        public byte Latency;
-        public int GameId;
-
-        public string ServerUsername;
-        public byte MapSavingProgress;
-        public short var0;
         public Client[] Clients;
+        public string Description;
 
         public int FirstSequenceNumberToExpect;
         public int FirstSequenceNumberToSend;
-        public short NewPeerId;
-
-        public ModInfo[] Mods;
-        public ModSetting[] ModSettings;
-
-        public short PausedBy;
-
-        public int LanGameId;
-        public string Name;
-        public Version ApplicationVersion;
-        public short BuildVersion;
-        public string ServerDescription;
-        public short MaxPlayers;
+        public int GameId;
+        public string GameName;
         public int GameTimeElapsed;
         public bool HasPassword;
         public string HostAddress;
+        public bool IgnorePlayerLimitForReturnongPlayers;
 
-        public string[] Tags;
-
-        public string ServerUsername1;
-        public int AutosaveInterval;
-        public int AutosaveSlots;
-        public int AFKAutoKickInterval;
-        public bool AllowCommands;
+        public int LanGameId;
+        public byte Latency;
+        public byte MapSavingProgress;
+        public short MaxPlayers;
         public int MaxUploadInKilobytesPerSecond;
         public byte MinimumLatencyInTicks;
-        public bool IgnorePlayerLimitForReturnongPlayers;
-        public bool OnlyAdminsCanPauseTheGame;
-        public bool RequireUserVerification;
 
-        public string[] Admins;
+        public ModInfo[] Mods;
+        public ModSetting[] ModSettings;
+        public string Name;
+        public short NewPeerId;
+        public bool Online;
+        public bool OnlyAdminsCanPauseTheGame;
+
+        public short PausedBy;
+        public bool RequireUserVerification;
+        public string ServerDescription;
+        public string ServerHash;
+
+        public string ServerUsername;
+
+        public string ServerUsername1;
+        public byte Status;
+
+        public string[] Tags;
+        public short var0;
 
         public ListItem[] Whitelist;
         public AddressToUsernameMapping[] WhitelistMappings;
 
-        public ListItem[] Banlist;
-        public AddressToUsernameMapping[] BanlistMappings;
+        public ConnectionAcceptOrDenyMessage(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public ConnectionAcceptOrDenyMessage() { }
 
         public PacketType GetMessageType()
         {
@@ -80,13 +80,13 @@ namespace FactorioNetParser.FactorioNet.Messages
         {
             ClientrequestId = reader.ReadInt32();
             Status = reader.ReadByte();
-            GameName = Reader.ReadString(reader);
-            ServerHash = Reader.ReadString(reader);
-            Description = Reader.ReadString(reader);
+            GameName = reader.ReadSimpleString();
+            ServerHash = reader.ReadSimpleString();
+            Description = reader.ReadSimpleString();
             Latency = reader.ReadByte();
             GameId = reader.ReadInt32();
 
-            ServerUsername = Reader.ReadString(reader);
+            ServerUsername = reader.ReadSimpleString();
             MapSavingProgress = reader.ReadByte();
             var0 = reader.ReadVarShort();
             Clients = reader.ReadSimpleArray<Client>();
@@ -101,23 +101,23 @@ namespace FactorioNetParser.FactorioNet.Messages
             PausedBy = reader.ReadInt16();
 
             LanGameId = reader.ReadInt32();
-            Name = Reader.ReadString(reader);
+            Name = reader.ReadSimpleString();
             ApplicationVersion = new Version(reader);
             BuildVersion = reader.ReadInt16();
-            ServerDescription = Reader.ReadString(reader);
+            ServerDescription = reader.ReadSimpleString();
             MaxPlayers = reader.ReadInt16();
             GameTimeElapsed = reader.ReadInt32();
             HasPassword = reader.ReadBoolean();
-            int hostaddrln = reader.ReadInt32();
-            byte[] hostaddrstrb = new byte[hostaddrln];
+            var hostaddrln = reader.ReadInt32();
+            var hostaddrstrb = new byte[hostaddrln];
             reader.Read(hostaddrstrb, 0, hostaddrln);
-            HostAddress = System.Text.Encoding.UTF8.GetString(hostaddrstrb);
+            HostAddress = Encoding.UTF8.GetString(hostaddrstrb);
 
-            Tags = reader.ReadArray((x) => Reader.ReadString(x));
-            ServerUsername1 = Reader.ReadString(reader);
+            Tags = reader.ReadArray(Reader.ReadSimpleString);
+            ServerUsername1 = reader.ReadSimpleString();
             AutosaveInterval = reader.ReadInt32();
             AutosaveSlots = reader.ReadInt32();
-            AFKAutoKickInterval = reader.ReadInt32();
+            AfkAutoKickInterval = reader.ReadInt32();
             AllowCommands = reader.ReadBoolean();
             MaxUploadInKilobytesPerSecond = reader.ReadInt32();
             MinimumLatencyInTicks = reader.ReadByte();
@@ -125,7 +125,7 @@ namespace FactorioNetParser.FactorioNet.Messages
             OnlyAdminsCanPauseTheGame = reader.ReadBoolean();
             RequireUserVerification = reader.ReadBoolean();
 
-            Admins = reader.ReadArray((x) => Reader.ReadString(x));
+            Admins = reader.ReadArray(Reader.ReadSimpleString);
             Whitelist = reader.ReadArray<ListItem>();
             WhitelistMappings = reader.ReadArray<AddressToUsernameMapping>();
             Banlist = reader.ReadArray<ListItem>();
@@ -134,20 +134,21 @@ namespace FactorioNetParser.FactorioNet.Messages
             Online = true;
             return this;
         }
-        public ConnectionAcceptOrDenyMessage(BinaryReader reader)
+    }
+
+    internal class ConnectionRequestMessage : IReadable<ConnectionRequestMessage>, IWritable<ConnectionRequestMessage>,
+        IPacket
+    {
+        public short BuildVersion;
+        public int ConnectionRequestIdGeneratedOnClient;
+        public Version Version;
+
+        public ConnectionRequestMessage(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public ConnectionAcceptOrDenyMessage()
-        {
-        }
-    }
-    class ConnectionRequestMessage : IReadable<ConnectionRequestMessage>, IWritable<ConnectionRequestMessage>, IPacket
-    {
-        public Version Version;
-        public short BuildVersion;
-        public int ConnectionRequestIDGeneratedOnClient;
+        public ConnectionRequestMessage() { }
 
         public PacketType GetMessageType()
         {
@@ -158,7 +159,7 @@ namespace FactorioNetParser.FactorioNet.Messages
         {
             Version = new Version(reader);
             BuildVersion = reader.ReadInt16();
-            ConnectionRequestIDGeneratedOnClient = reader.ReadInt32();
+            ConnectionRequestIdGeneratedOnClient = reader.ReadInt32();
             return this;
         }
 
@@ -166,30 +167,30 @@ namespace FactorioNetParser.FactorioNet.Messages
         {
             Version.Write(writer);
             writer.Write(BuildVersion);
-            writer.Write(ConnectionRequestIDGeneratedOnClient);
+            writer.Write(ConnectionRequestIdGeneratedOnClient);
         }
+    }
 
-        public ConnectionRequestMessage(BinaryReader reader)
+    internal class ConnectionRequestReplyConfirmMessage : IReadable<ConnectionRequestReplyConfirmMessage>,
+        IWritable<ConnectionRequestReplyConfirmMessage>, IPacket
+    {
+        public int ConnectionRequestIdGeneratedOnClient;
+        public int ConnectionRequestIdGeneratedOnServer;
+        public int CoreChecksum;
+        public int InstanceId;
+        public ModInfo[] Mods = new ModInfo[0];
+        public ModSetting[] ModSettings = new ModSetting[0];
+        public string PasswordHash = "";
+        public string ServerKey = "";
+        public string ServerKeyTimestamp = "";
+        public string Username = "factoriolauncher";
+
+        public ConnectionRequestReplyConfirmMessage(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public ConnectionRequestMessage()
-        {
-        }
-    }
-    class ConnectionRequestReplyConfirmMessage : IReadable<ConnectionRequestReplyConfirmMessage>, IWritable<ConnectionRequestReplyConfirmMessage>, IPacket
-    {
-        public int ConnectionRequestIDGeneratedOnClient;
-        public int ConnectionRequestIDGeneratedOnServer;
-        public int InstanceId;
-        public string Username = "factoriolauncher";
-        public string PasswordHash = "";
-        public string ServerKey = "";
-        public string ServerKeyTimestamp = "";
-        public int CoreChecksum;
-        public ModInfo[] Mods = new ModInfo[0];
-        public ModSetting[] ModSettings = new ModSetting[0];
+        public ConnectionRequestReplyConfirmMessage() { }
 
         public PacketType GetMessageType()
         {
@@ -198,13 +199,13 @@ namespace FactorioNetParser.FactorioNet.Messages
 
         public ConnectionRequestReplyConfirmMessage Load(BinaryReader reader)
         {
-            ConnectionRequestIDGeneratedOnClient = reader.ReadInt32();
-            ConnectionRequestIDGeneratedOnServer = reader.ReadInt32();
+            ConnectionRequestIdGeneratedOnClient = reader.ReadInt32();
+            ConnectionRequestIdGeneratedOnServer = reader.ReadInt32();
             InstanceId = reader.ReadInt32();
-            Username = Reader.ReadString(reader);
-            PasswordHash = Reader.ReadString(reader);
-            ServerKey = Reader.ReadString(reader);
-            ServerKeyTimestamp = Reader.ReadString(reader);
+            Username = reader.ReadSimpleString();
+            PasswordHash = reader.ReadSimpleString();
+            ServerKey = reader.ReadSimpleString();
+            ServerKeyTimestamp = reader.ReadSimpleString();
             CoreChecksum = reader.ReadInt32();
             Mods = reader.ReadArray<ModInfo>();
             ModSettings = reader.ReadArray<ModSetting>();
@@ -213,49 +214,53 @@ namespace FactorioNetParser.FactorioNet.Messages
 
         public void Write(BinaryWriter writer)
         {
-            writer.Write(ConnectionRequestIDGeneratedOnClient);
-            writer.Write(ConnectionRequestIDGeneratedOnServer);
+            writer.Write(ConnectionRequestIdGeneratedOnClient);
+            writer.Write(ConnectionRequestIdGeneratedOnServer);
             writer.Write(InstanceId);
-            writer.WriteString(Username);
-            writer.WriteString(PasswordHash);
-            writer.WriteString(ServerKey);
-            writer.WriteString(ServerKeyTimestamp);
+            writer.WriteSimpleString(Username);
+            writer.WriteSimpleString(PasswordHash);
+            writer.WriteSimpleString(ServerKey);
+            writer.WriteSimpleString(ServerKeyTimestamp);
             writer.Write(CoreChecksum);
             writer.WriteArray(Mods);
             writer.WriteArray(ModSettings);
         }
-        public ConnectionRequestReplyConfirmMessage(BinaryReader reader)
-        {
-            Load(reader);
-        }
-        public ConnectionRequestReplyConfirmMessage()
-        {
-        }
     }
-    class ConnectionRequestReplyMessage : IReadable<ConnectionRequestReplyMessage>, IPacket
+
+    internal class ConnectionRequestReplyMessage : IReadable<ConnectionRequestReplyMessage>, IPacket
     {
-        public Version Version;
         public short BuildVersion;
-        public int ConnectionRequestIDGeneratedOnClient;
-        public int ConnectionRequestIDGeneratedOnServer;
+        public int ConnectionRequestIdGeneratedOnClient;
+        public int ConnectionRequestIdGeneratedOnServer;
+        public Version Version;
+
         public PacketType GetMessageType()
         {
             return PacketType.ConnectionRequestReply;
         }
+
         public ConnectionRequestReplyMessage Load(BinaryReader reader)
         {
             Version = new Version(reader);
             BuildVersion = reader.ReadInt16();
-            ConnectionRequestIDGeneratedOnClient = reader.ReadInt32();
-            ConnectionRequestIDGeneratedOnServer = reader.ReadInt32();
+            ConnectionRequestIdGeneratedOnClient = reader.ReadInt32();
+            ConnectionRequestIdGeneratedOnServer = reader.ReadInt32();
             return this;
         }
     }
-    class EmptyMessage : IReadable<EmptyMessage>, IWritable<EmptyMessage>, IPacket
+
+    internal class EmptyMessage : IReadable<EmptyMessage>, IWritable<EmptyMessage>, IPacket
     {
+        public EmptyMessage(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public EmptyMessage() { }
+
         public PacketType GetMessageType()
         {
-            return PacketType.EmptyPacket;
+            return PacketType.Empty;
         }
 
         public EmptyMessage Load(BinaryReader reader)
@@ -263,105 +268,103 @@ namespace FactorioNetParser.FactorioNet.Messages
             return this;
         }
 
-        public void Write(BinaryWriter writer)
-        {
-
-        }
-
-        public EmptyMessage(BinaryReader reader)
-        {
-            Load(reader);
-        }
-
-        public EmptyMessage()
-        {
-        }
+        public void Write(BinaryWriter writer) { }
     }
 
-    class AddressToUsernameMapping : IReadable<AddressToUsernameMapping>
+    internal class AddressToUsernameMapping : IReadable<AddressToUsernameMapping>
     {
-        public string Username;
         public string Address;
-        public AddressToUsernameMapping Load(BinaryReader reader)
-        {
-            Username = reader.ReadComplexString();
-            Address = reader.ReadComplexString();
-            return this;
-        }
+        public string Username;
+
         public AddressToUsernameMapping(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public AddressToUsernameMapping()
-        {
-        }
-    }
-    class Client : IReadable<Client>
-    {
-        public short peerId;
-        public string username;
-        public byte droppingProgrss;
-        public byte mapSavingProgress;
-        public byte mapDownloadingProgress;
-        public byte mapLoadingProgress;
-        public byte tryingToCatchUpProgress;
+        public AddressToUsernameMapping() { }
 
-        public Client Load(BinaryReader reader)
+        public AddressToUsernameMapping Load(BinaryReader reader)
         {
-            peerId = Reader.ReadVarShort(reader);
-            username = Reader.ReadString(reader);
-            byte flags = reader.ReadByte();
-            if ((flags & 0x01) > 0)
-                droppingProgrss = reader.ReadByte();
-            if ((flags & 0x02) > 0)
-                mapSavingProgress = reader.ReadByte();
-            if ((flags & 0x04) > 0)
-                mapDownloadingProgress = reader.ReadByte();
-            if ((flags & 0x08) > 0)
-                mapLoadingProgress = reader.ReadByte();
-            if ((flags & 0x10) > 0)
-                tryingToCatchUpProgress = reader.ReadByte();
+            Username = Reader.ReadString(reader);
+            Address = Reader.ReadString(reader);
             return this;
         }
+    }
+
+    internal class Client : IReadable<Client>
+    {
+        public byte DroppingProgrss;
+        public byte MapDownloadingProgress;
+        public byte MapLoadingProgress;
+        public byte MapSavingProgress;
+        public short PeerId;
+        public byte TryingToCatchUpProgress;
+        public string Username;
+
         public Client(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public Client()
+        public Client() { }
+
+        public Client Load(BinaryReader reader)
         {
-        }
-    }
-    class ListItem : IReadable<ListItem>
-    {
-        public string Username;
-        public string Reason;
-        public string Address;
-        public ListItem Load(BinaryReader reader)
-        {
-            Username = Reader.ReadString(reader);
-            Reason = Reader.ReadString(reader);
-            Address = Reader.ReadString(reader);
+            PeerId = reader.ReadVarShort();
+            Username = reader.ReadSimpleString();
+            var flags = reader.ReadByte();
+            if ((flags & 0x01) > 0)
+                DroppingProgrss = reader.ReadByte();
+            if ((flags & 0x02) > 0)
+                MapSavingProgress = reader.ReadByte();
+            if ((flags & 0x04) > 0)
+                MapDownloadingProgress = reader.ReadByte();
+            if ((flags & 0x08) > 0)
+                MapLoadingProgress = reader.ReadByte();
+            if ((flags & 0x10) > 0)
+                TryingToCatchUpProgress = reader.ReadByte();
             return this;
         }
+    }
+
+    internal class ListItem : IReadable<ListItem>
+    {
+        public string Address;
+        public string Reason;
+        public string Username;
+
         public ListItem(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public ListItem()
+        public ListItem() { }
+
+        public ListItem Load(BinaryReader reader)
         {
+            Username = reader.ReadSimpleString();
+            Reason = reader.ReadSimpleString();
+            Address = reader.ReadSimpleString();
+            return this;
         }
     }
-    class ModInfo : IReadable<ModInfo>, IWritable<ModInfo>
+
+    internal class ModInfo : IReadable<ModInfo>, IWritable<ModInfo>
     {
+        public int Crc;
         public string Name;
         public Version Version;
-        public int Crc;
+
+        public ModInfo(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public ModInfo() { }
+
         public ModInfo Load(BinaryReader reader)
         {
-            Name = Reader.ReadString(reader);
+            Name = reader.ReadSimpleString();
             Version = new Version(reader);
             Crc = reader.ReadInt32();
             return this;
@@ -369,25 +372,24 @@ namespace FactorioNetParser.FactorioNet.Messages
 
         public void Write(BinaryWriter writer)
         {
-            writer.WriteString(Name);
+            writer.WriteSimpleString(Name);
             Version.Write(writer);
             writer.Write(Crc);
         }
+    }
 
-        public ModInfo(BinaryReader reader)
+    internal class ModSetting : IReadable<ModSetting>, IWritable<ModSetting>
+    {
+        public string Name;
+        public byte Type;
+        public object Value;
+
+        public ModSetting(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public ModInfo()
-        {
-        }
-    }
-    class ModSetting : IReadable<ModSetting>, IWritable<ModSetting>
-    {
-        public byte Type;
-        public string Name;
-        public object Value;
+        public ModSetting() { }
 
         public ModSetting Load(BinaryReader reader)
         {
@@ -398,11 +400,12 @@ namespace FactorioNetParser.FactorioNet.Messages
                 case 2:
                 case 3:
                 case 4:
-                    Name = reader.ReadComplexString();
+                    Name = Reader.ReadString(reader);
                     break;
                 default:
                     throw new IOException("Wrong setting type");
             }
+
             switch (Type)
             {
                 case 1:
@@ -415,11 +418,12 @@ namespace FactorioNetParser.FactorioNet.Messages
                     Value = reader.ReadInt64();
                     break;
                 case 4:
-                    Value = reader.ReadComplexString();
+                    Value = Reader.ReadString(reader);
                     break;
                 default:
                     throw new IOException("Wrong setting type");
             }
+
             return this;
         }
 
@@ -432,43 +436,44 @@ namespace FactorioNetParser.FactorioNet.Messages
                 case 2:
                 case 3:
                 case 4:
-                    writer.WriteComplexString(Name);
+                    writer.WriteString(Name);
                     break;
                 default:
                     throw new IOException("Wrong setting type");
             }
+
             switch (Type)
             {
                 case 1:
-                    writer.Write((bool)Value);
+                    writer.Write((bool) Value);
                     break;
                 case 2:
-                    writer.Write((double)Value);
+                    writer.Write((double) Value);
                     break;
                 case 3:
-                    writer.Write((long)Value);
+                    writer.Write((long) Value);
                     break;
                 case 4:
-                    writer.WriteComplexString((string)Value);
+                    writer.WriteString((string) Value);
                     break;
                 default:
                     throw new IOException("Wrong setting type");
             }
         }
-
-        public ModSetting(BinaryReader reader)
-        {
-            Load(reader);
-        }
-        public ModSetting()
-        {
-        }
     }
-    class Version : IReadable<Version>, IWritable<Version>
+
+    internal class Version : IReadable<Version>, IWritable<Version>
     {
         public short MajorVersion;
         public short MinorVersion;
         public short SubVersion;
+
+        public Version(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public Version() { }
 
         public Version Load(BinaryReader reader)
         {
@@ -483,15 +488,6 @@ namespace FactorioNetParser.FactorioNet.Messages
             writer.WriteVarShort(MajorVersion);
             writer.WriteVarShort(MinorVersion);
             writer.WriteVarShort(SubVersion);
-        }
-
-        public Version(BinaryReader reader)
-        {
-            Load(reader);
-        }
-
-        public Version()
-        {
         }
     }
 }

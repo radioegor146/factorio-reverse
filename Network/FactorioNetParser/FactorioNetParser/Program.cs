@@ -10,14 +10,18 @@ using System.Xml.Linq;
 using PcapngUtils.Pcap;
 using PcapngUtils.PcapNG;
 using FactorioNetParser.FactorioNet;
+using FactorioNetParser.FactorioNet.Messages;
 
 namespace FactorioNetParser
 {
 
-    class Program
+    internal class Program
     {
-        static readonly FactorioServerApi serverApi = new FactorioServerApi();
-        static void Main(string[] args)
+        public static List<IPacket> FactorioPackets = new List<IPacket>();
+
+        private static readonly FactorioServerApi serverApi = new FactorioServerApi();
+
+        private static void Main(string[] args)
         {
             using (var reader = new PcapNGReader("factorio.pcapng", false))
             {
@@ -41,7 +45,7 @@ namespace FactorioNetParser
         Server
     }
 
-    enum PacketType
+    public enum PacketType
     {
         Ping,
         PingReply,

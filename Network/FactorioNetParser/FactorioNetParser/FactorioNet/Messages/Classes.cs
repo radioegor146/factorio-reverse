@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 
 namespace FactorioNetParser.FactorioNet.Messages
 {
-    class Class0 : IReadable<Class0>
+    internal class Class0 : IReadable<Class0>
     {
         public short var0;
         public int var1;
+
+        public Class0(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public Class0() { }
 
         public Class0 Load(BinaryReader reader)
         {
@@ -17,35 +20,25 @@ namespace FactorioNetParser.FactorioNet.Messages
             var1 = reader.ReadInt32();
             return this;
         }
-        
-        public Class0(BinaryReader reader)
+    }
+
+    internal class Class1 : IReadable<Class1>
+    {
+        public byte var0;
+        public int var1;
+
+        public Class1(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public Class0()
-        {
-        }
-    }
-
-    class Class1 : IReadable<Class1>
-    {
-        public byte var0;
-        public int var1;
+        public Class1() { }
 
         public Class1 Load(BinaryReader reader)
         {
             var0 = reader.ReadByte();
             var1 = reader.ReadInt32();
             return this;
-        }
-        public Class1(BinaryReader reader)
-        {
-            Load(reader);
-        }
-
-        public Class1()
-        {
         }
     }
 }

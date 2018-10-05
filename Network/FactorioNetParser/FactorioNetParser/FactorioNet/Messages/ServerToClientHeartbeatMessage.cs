@@ -5,48 +5,55 @@ using System.Linq;
 
 namespace FactorioNetParser.FactorioNet.Messages
 {
-    class PixelPosition : IReadable<PixelPosition>
+    internal class PixelPosition : IReadable<PixelPosition>
     {
         public int X;
         public int Y;
+
+        public PixelPosition(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public PixelPosition() { }
+
         public PixelPosition Load(BinaryReader reader)
         {
             X = reader.ReadInt32();
             Y = reader.ReadInt32();
             return this;
         }
-        public PixelPosition(BinaryReader reader)
-        {
-            Load(reader);
-        }
-
-        public PixelPosition()
-        {
-        }
     }
 
-    class Direction : IReadable<Direction>
+    internal class Direction : IReadable<Direction>
     {
         public byte Value;
-        public Direction Load(BinaryReader reader)
-        {
-            Value = reader.ReadByte();
-            return this;
-        }
+
         public Direction(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public Direction()
+        public Direction() { }
+
+        public Direction Load(BinaryReader reader)
         {
+            Value = reader.ReadByte();
+            return this;
         }
     }
 
-    class RidingState : IReadable<RidingState>
+    internal class RidingState : IReadable<RidingState>
     {
-        public byte Direction;
         public byte AccelerationState;
+        public byte Direction;
+
+        public RidingState(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public RidingState() { }
 
         public RidingState Load(BinaryReader reader)
         {
@@ -54,22 +61,21 @@ namespace FactorioNetParser.FactorioNet.Messages
             AccelerationState = reader.ReadByte();
             return this;
         }
-        public RidingState(BinaryReader reader)
-        {
-            Load(reader);
-        }
-
-        public RidingState()
-        {
-        }
     }
 
-    class ItemStackTargetSpecification : IReadable<ItemStackTargetSpecification>
+    internal class ItemStackTargetSpecification : IReadable<ItemStackTargetSpecification>
     {
         public byte InventoryIndex;
         public ushort SlotIndex;
         public byte Source;
         public byte Target;
+
+        public ItemStackTargetSpecification(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public ItemStackTargetSpecification() { }
 
         public ItemStackTargetSpecification Load(BinaryReader reader)
         {
@@ -79,22 +85,21 @@ namespace FactorioNetParser.FactorioNet.Messages
             Target = reader.ReadByte();
             return this;
         }
-        public ItemStackTargetSpecification(BinaryReader reader)
+    }
+
+    internal class SignalId : IReadable<SignalId>
+    {
+        public byte ContainedType;
+        public ushort FluidId;
+        public ushort ItemId;
+        public ushort VirtualSignalId;
+
+        public SignalId(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public ItemStackTargetSpecification()
-        {
-        }
-    }
-
-    class SignalId : IReadable<SignalId>
-    {
-        public byte ContainedType;
-        public ushort FluidId;
-        public ushort VirtualSignalId;
-        public ushort ItemId;
+        public SignalId() { }
 
         public SignalId Load(BinaryReader reader)
         {
@@ -113,25 +118,26 @@ namespace FactorioNetParser.FactorioNet.Messages
                 default:
                     throw new Exception($"Wrong SignalId: {ContainedType}");
             }
+
             return this;
         }
-        public SignalId(BinaryReader reader)
+    }
+
+    internal class CircuitCondition : IReadable<CircuitCondition>
+    {
+        public byte Comparator;
+        public SignalId FirstSignalId;
+        public int SecondConstant;
+        public bool SecondItemIsConstant;
+        public SignalId SecondSignalId;
+
+        public CircuitCondition(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public SignalId()
-        {
-        }
-    }
+        public CircuitCondition() { }
 
-    class CircuitCondition : IReadable<CircuitCondition>
-    {
-        public byte Comparator;
-        public SignalId FirstSignalId;
-        public SignalId SecondSignalId;
-        public int SecondConstant;
-        public bool SecondItemIsConstant;
         public CircuitCondition Load(BinaryReader reader)
         {
             Comparator = reader.ReadByte();
@@ -141,23 +147,22 @@ namespace FactorioNetParser.FactorioNet.Messages
             SecondItemIsConstant = reader.ReadBoolean();
             return this;
         }
-        public CircuitCondition(BinaryReader reader)
+    }
+
+    internal class GuiChangedData : IReadable<GuiChangedData>
+    {
+        public ushort Button;
+        public uint GuiElementIndex;
+        public bool IsAlt;
+        public bool IsControl;
+        public bool IsShift;
+
+        public GuiChangedData(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public CircuitCondition()
-        {
-        }
-    }
-
-    class GuiChangedData : IReadable<GuiChangedData>
-    {
-        public uint GuiElementIndex;
-        public ushort Button;
-        public bool IsAlt;
-        public bool IsControl;
-        public bool IsShift;
+        public GuiChangedData() { }
 
         public GuiChangedData Load(BinaryReader reader)
         {
@@ -168,20 +173,19 @@ namespace FactorioNetParser.FactorioNet.Messages
             IsShift = reader.ReadBoolean();
             return this;
         }
-        public GuiChangedData(BinaryReader reader)
+    }
+
+    internal class Vector : IReadable<Vector>
+    {
+        public double X;
+        public double Y;
+
+        public Vector(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public GuiChangedData()
-        {
-        }
-    }
-
-    class Vector : IReadable<Vector>
-    {
-        public double X;
-        public double Y;
+        public Vector() { }
 
         public Vector Load(BinaryReader reader)
         {
@@ -189,46 +193,44 @@ namespace FactorioNetParser.FactorioNet.Messages
             Y = reader.ReadDouble();
             return this;
         }
-        public Vector(BinaryReader reader)
+    }
+
+    internal class RealOrientation : IReadable<RealOrientation>
+    {
+        public float Orientation;
+
+        public RealOrientation(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public Vector()
-        {
-        }
-    }
-
-    class RealOrientation : IReadable<RealOrientation>
-    {
-        public float Orientation;
+        public RealOrientation() { }
 
         public RealOrientation Load(BinaryReader reader)
         {
             Orientation = reader.ReadSingle();
             return this;
         }
-        public RealOrientation(BinaryReader reader)
+    }
+
+    internal class SetupBlueprintData : IReadable<SetupBlueprintData>
+    {
+        public ReplacementEntityData[] EntitiesToChange;
+        public uint[] ExcludedEntities;
+        public uint[] ExcludedTiles;
+        public SignalId[] Icons;
+        public bool IncludeEntities;
+        public bool IncludeModules;
+        public bool IncludeStationNames;
+        public bool IncludeTiles;
+        public ReplacementTileData[] TilesToChange;
+
+        public SetupBlueprintData(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public RealOrientation()
-        {
-        }
-    }
-
-    class SetupBlueprintData : IReadable<SetupBlueprintData>
-    {
-        public bool IncludeModules;
-        public bool IncludeEntities;
-        public bool IncludeTiles;
-        public bool IncludeStationNames;
-        public uint[] ExcludedEntities;
-        public uint[] ExcludedTiles;
-        public ReplacementEntityData[] EntitiesToChange;
-        public ReplacementTileData[] TilesToChange;
-        public SignalId[] Icons;
+        public SetupBlueprintData() { }
 
         public SetupBlueprintData Load(BinaryReader reader)
         {
@@ -237,27 +239,26 @@ namespace FactorioNetParser.FactorioNet.Messages
             IncludeTiles = reader.ReadBoolean();
             IncludeStationNames = reader.ReadBoolean();
 
-            ExcludedEntities = reader.ReadArray((x) => x.ReadUInt32());
-            ExcludedTiles = reader.ReadArray((x) => x.ReadUInt32());
+            ExcludedEntities = reader.ReadArray(x => x.ReadUInt32());
+            ExcludedTiles = reader.ReadArray(x => x.ReadUInt32());
             EntitiesToChange = reader.ReadArray<ReplacementEntityData>();
             TilesToChange = reader.ReadArray<ReplacementTileData>();
             Icons = reader.ReadArray<SignalId>();
             return this;
         }
-        public SetupBlueprintData(BinaryReader reader)
+    }
+
+    internal class BlueprintRecordId : IReadable<BlueprintRecordId>
+    {
+        public ushort Id;
+        public ushort PlayerIndex;
+
+        public BlueprintRecordId(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public SetupBlueprintData()
-        {
-        }
-    }
-
-    class BlueprintRecordId : IReadable<BlueprintRecordId>
-    {
-        public ushort PlayerIndex;
-        public ushort Id;
+        public BlueprintRecordId() { }
 
         public BlueprintRecordId Load(BinaryReader reader)
         {
@@ -265,78 +266,75 @@ namespace FactorioNetParser.FactorioNet.Messages
             Id = reader.ReadUInt16();
             return this;
         }
-        public BlueprintRecordId(BinaryReader reader)
+    }
+
+    internal class UpdateBlueprintShelfData : IReadable<UpdateBlueprintShelfData>
+    {
+        public ushort NextRecordId;
+        public AddBlueprintRecordData[] RecordsToAdd;
+        public ushort[] RecordsToRemove;
+        public UpdateBlueprintData[] RecordsToUpdate;
+        public ushort ShelfPlayerIndex;
+        public uint Timestamp;
+
+        public UpdateBlueprintShelfData(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public BlueprintRecordId()
-        {
-        }
-    }
-
-    class UpdateBlueprintShelfData : IReadable<UpdateBlueprintShelfData>
-    {
-        public ushort ShelfPlayerIndex;
-        public ushort NextRecordId;
-        public uint Timestamp;
-        public ushort[] RecordsToRemove;
-        public AddBlueprintRecordData[] RecordsToAdd;
-        public UpdateBlueprintData[] RecordsToUpdate;
+        public UpdateBlueprintShelfData() { }
 
         public UpdateBlueprintShelfData Load(BinaryReader reader)
         {
             ShelfPlayerIndex = reader.ReadUInt16();
             NextRecordId = reader.ReadUInt16();
             Timestamp = reader.ReadUInt32();
-            RecordsToRemove = reader.ReadArray((x) => x.ReadUInt16());
+            RecordsToRemove = reader.ReadArray(x => x.ReadUInt16());
             RecordsToAdd = reader.ReadArray<AddBlueprintRecordData>();
             RecordsToUpdate = reader.ReadArray<UpdateBlueprintData>();
             return this;
         }
-        public UpdateBlueprintShelfData(BinaryReader reader)
-        {
-            Load(reader);
-        }
-
-        public UpdateBlueprintShelfData()
-        {
-        }
     }
 
-    class UpdateBlueprintData : IReadable<UpdateBlueprintData>
+    internal class UpdateBlueprintData : IReadable<UpdateBlueprintData>
     {
         public ushort Id;
         public byte[] NewHash = new byte[20];
         public string NewLabel;
 
-        public UpdateBlueprintData Load(BinaryReader reader)
-        {
-            Id = reader.ReadUInt16();
-            NewHash = reader.ReadBytes(20);
-            NewLabel = reader.ReadComplexString();
-            return this;
-        }
         public UpdateBlueprintData(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public UpdateBlueprintData()
+        public UpdateBlueprintData() { }
+
+        public UpdateBlueprintData Load(BinaryReader reader)
         {
+            Id = reader.ReadUInt16();
+            NewHash = reader.ReadBytes(20);
+            NewLabel = Reader.ReadString(reader);
+            return this;
         }
     }
 
-    class AddBlueprintRecordData : IReadable<AddBlueprintRecordData>
+    internal class AddBlueprintRecordData : IReadable<AddBlueprintRecordData>
     {
-        public ushort Id;
-        public byte[] Hash = new byte[20];
-        public ushort ItemId;
-        public bool IsBook;
-        public SignalId[] BlueprintIcons;
-        public string Label;
         public ushort AddInBook;
-        public SingleRecordDataInBook[] PreviewsInBook; //if isbook
+        public SignalId[] BlueprintIcons;
+        public byte[] Hash = new byte[20];
+        public ushort Id;
+        public bool IsBook;
+        public ushort ItemId;
+        public string Label;
+        public SingleRecordDataInBook[] PreviewsInBook;
+
+        public AddBlueprintRecordData(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public AddBlueprintRecordData() { }
 
         public AddBlueprintRecordData Load(BinaryReader reader)
         {
@@ -345,31 +343,28 @@ namespace FactorioNetParser.FactorioNet.Messages
             ItemId = reader.ReadUInt16();
             IsBook = reader.ReadBoolean();
             BlueprintIcons = reader.ReadArray<SignalId>();
-            Label = reader.ReadComplexString();
+            Label = Reader.ReadString(reader);
             AddInBook = reader.ReadUInt16();
             if (IsBook)
-            {
                 PreviewsInBook = reader.ReadArray<SingleRecordDataInBook>();
-            }
             return this;
         }
-        public AddBlueprintRecordData(BinaryReader reader)
+    }
+
+    internal class SingleRecordDataInBook : IReadable<SingleRecordDataInBook>
+    {
+        public SignalId[] BlueprintIcons;
+        public byte[] Hash = new byte[20];
+        public ushort Id;
+        public ushort ItemId;
+        public string Label;
+
+        public SingleRecordDataInBook(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public AddBlueprintRecordData()
-        {
-        }
-    }
-
-    class SingleRecordDataInBook : IReadable<SingleRecordDataInBook>
-    {
-        public ushort Id;
-        public ushort ItemId;
-        public byte[] Hash = new byte[20];
-        public SignalId[] BlueprintIcons;
-        public string Label;
+        public SingleRecordDataInBook() { }
 
         public SingleRecordDataInBook Load(BinaryReader reader)
         {
@@ -378,91 +373,86 @@ namespace FactorioNetParser.FactorioNet.Messages
 
             Hash = reader.ReadBytes(20);
             BlueprintIcons = reader.ReadArray<SignalId>();
-            Label = reader.ReadComplexString();
+            Label = Reader.ReadString(reader);
             return this;
-        }
-        public SingleRecordDataInBook(BinaryReader reader)
-        {
-            Load(reader);
-        }
-
-        public SingleRecordDataInBook()
-        {
         }
     }
 
-    class PlayerJoinGameData : IReadable<PlayerJoinGameData>
+    internal class PlayerJoinGameData : IReadable<PlayerJoinGameData>
     {
-        public ushort PeerId;
         public byte ForceId;
+        public ushort PeerId;
         public string Username;
 
-        public PlayerJoinGameData Load(BinaryReader reader)
-        {
-            PeerId = (ushort)reader.ReadVarShort();
-            ForceId = reader.ReadByte();
-            Username = reader.ReadComplexString();
-            return this;
-        }
-
-        public PlayerJoinGameData()
-        {
-        }
+        public PlayerJoinGameData() { }
 
         public PlayerJoinGameData(BinaryReader reader)
         {
             Load(reader);
         }
+
+        public PlayerJoinGameData Load(BinaryReader reader)
+        {
+            PeerId = (ushort) reader.ReadVarShort();
+            ForceId = reader.ReadByte();
+            Username = Reader.ReadString(reader);
+            return this;
+        }
     }
 
-    class ReplacementTileData : IReadable<ReplacementTileData>
+    internal class ReplacementTileData : IReadable<ReplacementTileData>
     {
         public Class1[] var0;
+
+        public ReplacementTileData(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public ReplacementTileData() { }
 
         public ReplacementTileData Load(BinaryReader reader)
         {
             var0 = reader.ReadArray<Class1>();
             return this;
         }
-        public ReplacementTileData(BinaryReader reader)
+    }
+
+    internal class ReplacementEntityData : IReadable<ReplacementEntityData>
+    {
+        public Class0[] var0;
+
+        public ReplacementEntityData(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public ReplacementTileData()
-        {
-        }
-    }
-
-    class ReplacementEntityData : IReadable<ReplacementEntityData>
-    {
-        public Class0[] var0;
+        public ReplacementEntityData() { }
 
         public ReplacementEntityData Load(BinaryReader reader)
         {
             var0 = reader.ReadArray<Class0>();
             return this;
         }
-        public ReplacementEntityData(BinaryReader reader)
+    }
+
+    internal class ArithmeticCombinatorParameters : IReadable<ArithmeticCombinatorParameters>
+    {
+        public int FirstConstant;
+        public SignalId FirstSignalId;
+        public bool FirstSignalIsConstant;
+        public byte Operation;
+        public SignalId OutputSignalId;
+        public int SecondConstant;
+        public SignalId SecondSignalId;
+        public bool SecondSignalIsConstant;
+
+        public ArithmeticCombinatorParameters(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public ReplacementEntityData()
-        {
-        }
-    }
-
-    class ArithmeticCombinatorParameters : IReadable<ArithmeticCombinatorParameters>
-    {
-        public SignalId FirstSignalId;
-        public SignalId SecondSignalId;
-        public SignalId OutputSignalId;
-        public int SecondConstant;
-        public byte Operation;
-        public bool SecondSignalIsConstant;
-        public int FirstConstant;
-        public bool FirstSignalIsConstant;
+        public ArithmeticCombinatorParameters() { }
 
         public ArithmeticCombinatorParameters Load(BinaryReader reader)
         {
@@ -476,27 +466,24 @@ namespace FactorioNetParser.FactorioNet.Messages
             FirstSignalIsConstant = reader.ReadBoolean();
             return this;
         }
+    }
 
-        public ArithmeticCombinatorParameters(BinaryReader reader)
+    internal class DeciderCombinatorParameters : IReadable<DeciderCombinatorParameters>
+    {
+        public byte Comparator;
+        public bool CopyCountFromInput;
+        public SignalId FirstSignalId;
+        public bool FirstSignalIsConstant;
+        public SignalId OutputSignalId;
+        public int SecondConstant;
+        public SignalId SecondSignalId;
+
+        public DeciderCombinatorParameters(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public ArithmeticCombinatorParameters()
-        {
-
-        }
-    }
-
-    class DeciderCombinatorParameters : IReadable<DeciderCombinatorParameters>
-    {
-        public SignalId FirstSignalId;
-        public SignalId SecondSignalId;
-        public SignalId OutputSignalId;
-        public int SecondConstant;
-        public byte Comparator;
-        public bool CopyCountFromInput;
-        public bool FirstSignalIsConstant;
+        public DeciderCombinatorParameters() { }
 
         public DeciderCombinatorParameters Load(BinaryReader reader)
         {
@@ -509,49 +496,45 @@ namespace FactorioNetParser.FactorioNet.Messages
             FirstSignalIsConstant = reader.ReadBoolean();
             return this;
         }
-
-        public DeciderCombinatorParameters(BinaryReader reader)
-        {
-            Load(reader);
-        }
-
-        public DeciderCombinatorParameters()
-        {
-        }
     }
 
-    class ProgrammableSpeakerAlertParameters : IReadable<ProgrammableSpeakerAlertParameters>
+    internal class ProgrammableSpeakerAlertParameters : IReadable<ProgrammableSpeakerAlertParameters>
     {
+        public string AlertMessage;
+        public SignalId IconSignalId;
         public bool ShowAlert;
         public bool ShowOnMap;
-        public SignalId IconSignalId;
-        public string AlertMessage;
-
-        public ProgrammableSpeakerAlertParameters Load(BinaryReader reader)
-        {
-            ShowAlert = reader.ReadBoolean();
-            ShowOnMap = reader.ReadBoolean();
-            IconSignalId = new SignalId(reader);
-            AlertMessage = reader.ReadComplexString();
-            return this;
-        }
 
         public ProgrammableSpeakerAlertParameters(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public ProgrammableSpeakerAlertParameters()
+        public ProgrammableSpeakerAlertParameters() { }
+
+        public ProgrammableSpeakerAlertParameters Load(BinaryReader reader)
         {
+            ShowAlert = reader.ReadBoolean();
+            ShowOnMap = reader.ReadBoolean();
+            IconSignalId = new SignalId(reader);
+            AlertMessage = Reader.ReadString(reader);
+            return this;
         }
     }
 
-    class BuildTerrainParameters : IReadable<BuildTerrainParameters>
+    internal class BuildTerrainParameters : IReadable<BuildTerrainParameters>
     {
         public bool CreatedByMoving;
-        public byte Size;
         public bool ShiftBuild;
+        public byte Size;
         public bool SkipFogOfWar;
+
+        public BuildTerrainParameters(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public BuildTerrainParameters() { }
 
         public BuildTerrainParameters Load(BinaryReader reader)
         {
@@ -561,23 +544,21 @@ namespace FactorioNetParser.FactorioNet.Messages
             SkipFogOfWar = reader.ReadBoolean();
             return this;
         }
+    }
 
-        public BuildTerrainParameters(BinaryReader reader)
+    internal class TrainWaitCondition : IReadable<TrainWaitCondition>
+    {
+        public byte Action;
+        public byte AddType;
+        public uint ConditionIndex;
+        public uint ScheldueIndex;
+
+        public TrainWaitCondition(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public BuildTerrainParameters()
-        {
-        }
-    }
-
-    class TrainWaitCondition : IReadable<TrainWaitCondition>
-    {
-        public byte Action;
-        public byte AddType;
-        public uint ScheldueIndex;
-        public uint ConditionIndex;
+        public TrainWaitCondition() { }
 
         public TrainWaitCondition Load(BinaryReader reader)
         {
@@ -587,24 +568,22 @@ namespace FactorioNetParser.FactorioNet.Messages
             ConditionIndex = reader.ReadUInt32();
             return this;
         }
+    }
 
-        public TrainWaitCondition(BinaryReader reader)
+    internal class TrainWaitConditionData : IReadable<TrainWaitConditionData>
+    {
+        public byte ConditionCompareType;
+        public uint ConditionIndex;
+        public uint ConditionTicks;
+        public byte ConditionType;
+        public uint ScheldueIndex;
+
+        public TrainWaitConditionData(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public TrainWaitCondition()
-        {
-        }
-    }
-
-    class TrainWaitConditionData : IReadable<TrainWaitConditionData>
-    {
-        public uint ScheldueIndex;
-        public uint ConditionIndex;
-        public byte ConditionType;
-        public byte ConditionCompareType;
-        public uint ConditionTicks;
+        public TrainWaitConditionData() { }
 
         public TrainWaitConditionData Load(BinaryReader reader)
         {
@@ -615,21 +594,19 @@ namespace FactorioNetParser.FactorioNet.Messages
             ConditionTicks = reader.ReadUInt32();
             return this;
         }
+    }
 
-        public TrainWaitConditionData(BinaryReader reader)
+    internal class ExtendedBitBuffer : IReadable<ExtendedBitBuffer>
+    {
+        public uint Bits;
+        public uint[] Data;
+
+        public ExtendedBitBuffer(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public TrainWaitConditionData()
-        {
-        }
-    }
-
-    class ExtendedBitBuffer : IReadable<ExtendedBitBuffer>
-    {
-        public uint[] Data;
-        public uint Bits;
+        public ExtendedBitBuffer() { }
 
         public ExtendedBitBuffer Load(BinaryReader reader)
         {
@@ -641,25 +618,23 @@ namespace FactorioNetParser.FactorioNet.Messages
                 Bits = reader.ReadUInt32();
             return this;
         }
+    }
 
-        public ExtendedBitBuffer(BinaryReader reader)
+    internal class BuildRailData : IReadable<BuildRailData>
+    {
+        public bool AlternativeBuild;
+        public ExtendedBitBuffer Buffer;
+        public Direction Direction;
+        public byte Mode;
+        public int StartX;
+        public int StartY;
+
+        public BuildRailData(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public ExtendedBitBuffer()
-        {
-        }
-    }
-
-    class BuildRailData : IReadable<BuildRailData>
-    {
-        public byte Mode;
-        public int StartX;
-        public int StartY;
-        public Direction Direction;
-        public ExtendedBitBuffer Buffer;
-        public bool AlternativeBuild;
+        public BuildRailData() { }
 
         public BuildRailData Load(BinaryReader reader)
         {
@@ -671,23 +646,21 @@ namespace FactorioNetParser.FactorioNet.Messages
             AlternativeBuild = reader.ReadBoolean();
             return this;
         }
+    }
 
-        public BuildRailData(BinaryReader reader)
+    internal class InfinityContainerFilterItemData : IReadable<InfinityContainerFilterItemData>
+    {
+        public uint Count;
+        public ushort FilterIndex;
+        public ushort ItemId;
+        public byte Mode;
+
+        public InfinityContainerFilterItemData(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public BuildRailData()
-        {
-        }
-    }
-
-    class InfinityContainerFilterItemData : IReadable<InfinityContainerFilterItemData>
-    {
-        public ushort ItemId;
-        public byte Mode;
-        public ushort FilterIndex;
-        public uint Count;
+        public InfinityContainerFilterItemData() { }
 
         public InfinityContainerFilterItemData Load(BinaryReader reader)
         {
@@ -697,53 +670,49 @@ namespace FactorioNetParser.FactorioNet.Messages
             Count = reader.ReadUInt32();
             return this;
         }
-
-        public InfinityContainerFilterItemData(BinaryReader reader)
-        {
-            Load(reader);
-        }
-
-        public InfinityContainerFilterItemData()
-        {
-        }
     }
 
-    class EditPermissionGroupParameters : IReadable<EditPermissionGroupParameters>
+    internal class EditPermissionGroupParameters : IReadable<EditPermissionGroupParameters>
     {
-        public int GroupId;
-        public ushort PlayerIndex;
         public ushort ActionIndex;
+        public int GroupId;
         public string NewGroupName;
+        public ushort PlayerIndex;
         public byte Type;
-
-        public EditPermissionGroupParameters Load(BinaryReader reader)
-        {
-            GroupId = reader.ReadVarInt();
-            PlayerIndex = reader.ReadUInt16();
-            ActionIndex = reader.ReadUInt16();
-            NewGroupName = reader.ReadComplexString();
-            Type = reader.ReadByte();
-            return this;
-        }
 
         public EditPermissionGroupParameters(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public EditPermissionGroupParameters()
-        { 
+        public EditPermissionGroupParameters() { }
+
+        public EditPermissionGroupParameters Load(BinaryReader reader)
+        {
+            GroupId = reader.ReadVarInt();
+            PlayerIndex = reader.ReadUInt16();
+            ActionIndex = reader.ReadUInt16();
+            NewGroupName = Reader.ReadString(reader);
+            Type = reader.ReadByte();
+            return this;
         }
     }
 
-    class ChooseElemId : IReadable<ChooseElemId>
+    internal class ChooseElemId : IReadable<ChooseElemId>
     {
-        public ushort ItemId;
         public ushort EntityId;
-        public ushort TileId;
         public ushort FluidId;
+        public ushort ItemId;
         public ushort RecipeId;
         public SignalId SignalId;
+        public ushort TileId;
+
+        public ChooseElemId(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public ChooseElemId() { }
 
         public ChooseElemId Load(BinaryReader reader)
         {
@@ -755,27 +724,20 @@ namespace FactorioNetParser.FactorioNet.Messages
             SignalId = new SignalId(reader);
             return this;
         }
+    }
 
-        public ChooseElemId(BinaryReader reader)
+    internal class InputAction : IReadable<InputAction>
+    {
+        public byte Action;
+        public List<object> Data = new List<object>();
+        public short PlayerIndex;
+
+        public InputAction(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public ChooseElemId()
-        {
-        }
-    }
-
-    class InputAction : IReadable<InputAction>
-    {
-        public byte Action;
-        public short PlayerIndex;
-        public List<object> Data = new List<object>();
-
-        private void Add(object obj)
-        {
-            Data.Add(obj);
-        }
+        public InputAction() { }
 
         public InputAction Load(BinaryReader reader)
         {
@@ -928,12 +890,12 @@ namespace FactorioNetParser.FactorioNet.Messages
                 case 0x7A:
                 case 0x7D:
                 case 0x89:
-                    Add(reader.ReadComplexString());
+                    Add(Reader.ReadString(reader));
                     break;
                 case 0x4A:
                     Add(reader.ReadByte());
                     Add(reader.ReadByte());
-                    Add(reader.ReadComplexString());
+                    Add(Reader.ReadString(reader));
                     Add(reader.ReadUInt32());
                     break;
                 case 0x4C:
@@ -943,7 +905,7 @@ namespace FactorioNetParser.FactorioNet.Messages
                     break;
                 case 0x4D:
                     Add(new GuiChangedData(reader));
-                    Add(reader.ReadComplexString());
+                    Add(Reader.ReadString(reader));
                     break;
                 case 0x4f:
                     Add(new GuiChangedData(reader));
@@ -1000,7 +962,7 @@ namespace FactorioNetParser.FactorioNet.Messages
                 case 0x6A:
                 case 0x6B:
                     Add(new BlueprintRecordId(reader));
-                    Add(reader.ReadComplexString());
+                    Add(Reader.ReadString(reader));
                     break;
                 case 0x6F:
                     Add(new PlayerJoinGameData(reader));
@@ -1037,7 +999,7 @@ namespace FactorioNetParser.FactorioNet.Messages
                     Add(new BuildRailData(reader));
                     break;
                 case 0x80:
-                    Add(reader.ReadComplexString());
+                    Add(Reader.ReadString(reader));
                     Add(reader.ReadUInt32());
                     Add(reader.ReadUInt64());
                     break;
@@ -1054,7 +1016,7 @@ namespace FactorioNetParser.FactorioNet.Messages
                     break;
                 case 0x87:
                     Add(reader.ReadInt32());
-                    Add(reader.ReadComplexString());
+                    Add(Reader.ReadString(reader));
                     Add(new SignalId(reader));
                     Add(new PixelPosition(reader));
                     break;
@@ -1125,26 +1087,31 @@ namespace FactorioNetParser.FactorioNet.Messages
                 default:
                     throw new Exception($"No such InputAction: 0x{Action:x2}");
             }
+
             return this;
         }
-        public InputAction(BinaryReader reader)
-        {
-            Load(reader);
-        }
-        public InputAction()
-        {
 
+        private void Add(object obj)
+        {
+            Data.Add(obj);
         }
     }
 
-    class InputActionFragment : IReadable<InputActionFragment>
+    internal class InputActionFragment : IReadable<InputActionFragment>
     {
-        public byte Type;
+        public byte[] FragmentData;
+        public int FragmentNumber;
         public int Id;
         public short PlayerIndex = -1;
         public int TotalFragments = 1;
-        public int FragmentNumber;
-        public byte[] FragmentData;
+        public byte Type;
+
+        public InputActionFragment(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public InputActionFragment() { }
 
         public InputActionFragment Load(BinaryReader reader)
         {
@@ -1156,25 +1123,18 @@ namespace FactorioNetParser.FactorioNet.Messages
                 TotalFragments = reader.ReadVarInt();
                 FragmentNumber = reader.ReadVarInt();
             }
+
             FragmentData = reader.ReadBytes(reader.ReadVarInt());
             return this;
         }
-        public InputActionFragment(BinaryReader reader)
-        {
-            Load(reader);
-        }
-
-        public InputActionFragment()
-        {
-        }
     }
 
-    class TickClosure
+    internal class TickClosure
     {
-        public int Tick;
-        public InputAction[] InputActions;
         public InputActionFragment[] InputActionFragments;
-        
+        public InputAction[] InputActions;
+        public int Tick;
+
         public TickClosure(BinaryReader reader, bool loadTickOnly)
         {
             Tick = reader.ReadInt32();
@@ -1192,33 +1152,33 @@ namespace FactorioNetParser.FactorioNet.Messages
         }
     }
 
-    class ScriptRegistrations : IReadable<ScriptRegistrations>
+    internal class ScriptRegistrations : IReadable<ScriptRegistrations>
     {
         public uint[] var0;
         public uint[] var1;
         public byte var2;
         public byte var3;
         public byte var4;
-        public ScriptRegistrations()
+
+        public ScriptRegistrations() { }
+
+        public ScriptRegistrations(BinaryReader reader)
         {
+            Load(reader);
         }
 
         public ScriptRegistrations Load(BinaryReader reader)
         {
-            var0 = reader.ReadArray((x) => x.ReadUInt32());
-            var1 = reader.ReadArray((x) => x.ReadUInt32());
+            var0 = reader.ReadArray(x => x.ReadUInt32());
+            var1 = reader.ReadArray(x => x.ReadUInt32());
             var2 = reader.ReadByte();
             var3 = reader.ReadByte();
             var4 = reader.ReadByte();
             return this;
         }
-        public ScriptRegistrations(BinaryReader reader)
-        {
-            Load(reader);
-        }
     }
 
-    class SynchronizerAction : IReadable<SynchronizerAction>
+    internal class SynchronizerAction : IReadable<SynchronizerAction>
     {
         public enum ActionType : byte
         {
@@ -1248,25 +1208,19 @@ namespace FactorioNetParser.FactorioNet.Messages
 
         public ActionType Action;
 
-        public SynchronizerAction()
-        {
-        }
+        public List<object> Data = new List<object>();
+
+        public SynchronizerAction() { }
 
         public SynchronizerAction(BinaryReader reader)
         {
             Load(reader);
         }
 
-        public List<object> Data = new List<object>();
-        public void Add(object a)
-        {
-            Data.Add(a);
-        }
-
         public SynchronizerAction Load(BinaryReader reader)
         {
-            Action = (ActionType)reader.ReadByte();
-            switch ((byte)Action)
+            Action = (ActionType) reader.ReadByte();
+            switch ((byte) Action)
             {
                 case 0x00:
                 case 0x08:
@@ -1286,7 +1240,7 @@ namespace FactorioNetParser.FactorioNet.Messages
                     Add(reader.ReadByte());
                     break;
                 case 0x02:
-                    Add(reader.ReadComplexString());
+                    Add(Reader.ReadString(reader));
                     break;
                 case 0x04:
                 case 0x0F:
@@ -1302,12 +1256,13 @@ namespace FactorioNetParser.FactorioNet.Messages
                     Add(reader.ReadInt32());
                     Add(reader.ReadByte());
                     Add(reader.ReadByte());
-                    Add(reader.ReadArray((x) => Tuple.Create(reader.ReadComplexString(), reader.ReadUInt32()))
-                        .ToDictionary((x) => x.Item1, (y) => y.Item2));
-                    Add(reader.ReadArray((x) => Tuple.Create(reader.ReadComplexString(), new ScriptRegistrations(reader)))
-                        .ToDictionary((x) => x.Item1, (y) => y.Item2));
-                    Add(reader.ReadArray((x) => Tuple.Create(reader.ReadComplexString(), reader.ReadArray((y) => y.ReadComplexString())))
-                        .ToDictionary((x) => x.Item1, (y) => y.Item2));
+                    Add(reader.ReadArray(x => Tuple.Create(Reader.ReadString(reader), reader.ReadUInt32()))
+                        .ToDictionary(x => x.Item1, y => y.Item2));
+                    Add(reader.ReadArray(x => Tuple.Create(Reader.ReadString(reader), new ScriptRegistrations(reader)))
+                        .ToDictionary(x => x.Item1, y => y.Item2));
+                    Add(reader.ReadArray(x =>
+                            Tuple.Create(Reader.ReadString(reader), reader.ReadArray(y => Reader.ReadString(y))))
+                        .ToDictionary(x => x.Item1, y => y.Item2));
                     break;
                 case 0x12:
                     Add(reader.ReadInt32());
@@ -1320,17 +1275,35 @@ namespace FactorioNetParser.FactorioNet.Messages
                 default:
                     throw new Exception($"No such SynchronizerAction: 0x{Action:x2}");
             }
+
             return this;
+        }
+
+        public void Add(object a)
+        {
+            Data.Add(a);
         }
     }
 
-    class ServerToClientHeartbeatMessage : IReadable<ServerToClientHeartbeatMessage>
+    internal class ServerToClientHeartbeatMessage : IReadable<ServerToClientHeartbeatMessage>, IPacket
     {
         public byte DeserializationMask;
-        public int SequenceNumber;
-        public TickClosure[] TickClosures;
-        public Tuple<SynchronizerAction, ushort>[] SynchronizerActions;
         public uint[] RequestsForHeartbeat;
+        public int SequenceNumber;
+        public Tuple<SynchronizerAction, ushort>[] SynchronizerActions;
+        public TickClosure[] TickClosures;
+
+        public ServerToClientHeartbeatMessage(BinaryReader reader)
+        {
+            Load(reader);
+        }
+
+        public ServerToClientHeartbeatMessage() { }
+
+        public PacketType GetMessageType()
+        {
+            return PacketType.ServerToClientHeartbeat;
+        }
 
         public ServerToClientHeartbeatMessage Load(BinaryReader reader)
         {
@@ -1346,28 +1319,15 @@ namespace FactorioNetParser.FactorioNet.Messages
                 }
                 else
                 {
-                    TickClosures = reader.ReadArray((x) => new TickClosure(x, loadTickOnly));
+                    TickClosures = reader.ReadArray(x => new TickClosure(x, loadTickOnly));
                 }
             }
-            
+
             if ((DeserializationMask & 0x10) > 0)
-            {
-                SynchronizerActions = reader.ReadArray((x) => Tuple.Create(new SynchronizerAction(x), x.ReadUInt16()));
-            }
+                SynchronizerActions = reader.ReadArray(x => Tuple.Create(new SynchronizerAction(x), x.ReadUInt16()));
 
-            if ((DeserializationMask & 0x01) > 0)
-            {
-                RequestsForHeartbeat = reader.ReadArray((x) => x.ReadUInt32());
-            }
+            if ((DeserializationMask & 0x01) > 0) RequestsForHeartbeat = reader.ReadArray(x => x.ReadUInt32());
             return this;
-        }
-        public ServerToClientHeartbeatMessage(BinaryReader reader)
-        {
-            Load(reader);
-        }
-
-        public ServerToClientHeartbeatMessage()
-        {
         }
     }
 }

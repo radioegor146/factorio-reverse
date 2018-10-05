@@ -1,7 +1,9 @@
-﻿namespace FactorioNetParser.FactorioNet
+﻿using System.IO;
+
+namespace FactorioNetParser.FactorioNet
 {
-    public interface IReadable<T>
+    public interface IReadable<out T>
     {
-        T Load(System.IO.BinaryReader reader);
+        T Load(BinaryReader reader);
     }
 }
