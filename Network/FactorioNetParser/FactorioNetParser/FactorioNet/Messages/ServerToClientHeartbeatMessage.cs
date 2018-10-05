@@ -768,7 +768,7 @@ namespace FactorioNetParser.FactorioNet.Messages
         }
     }
 
-    class InputAction
+    class InputAction : IReadable<InputAction>
     {
         public byte Action;
         public short PlayerIndex;
@@ -779,7 +779,7 @@ namespace FactorioNetParser.FactorioNet.Messages
             Data.Add(obj);
         }
 
-        public InputAction(BinaryReader reader)
+        public InputAction Load(BinaryReader reader)
         {
             Action = reader.ReadByte();
             PlayerIndex = reader.ReadVarShort();
@@ -826,7 +826,7 @@ namespace FactorioNetParser.FactorioNet.Messages
                 case 0x26:
                 case 0x27:
                 case 0x28:
-                    return;
+                    return this;
                 case 0x29:
                 case 0x2C:
                 case 0x37:
@@ -1127,6 +1127,15 @@ namespace FactorioNetParser.FactorioNet.Messages
                 default:
                     throw new Exception($"No such InputAction: 0x{Action:x2}");
             }
+            return this;
+        }
+        public InputAction(BinaryReader reader)
+        {
+            Load(reader);
+        }
+        public InputAction()
+        {
+
         }
     }
 
@@ -1185,11 +1194,135 @@ namespace FactorioNetParser.FactorioNet.Messages
         }
     }
 
-    class SynchronizerAction
+    class ScriptRegistrations : IReadable<ScriptRegistrations>
     {
+        public uint[] var0;
+        public uint[] var1;
+        public byte var2;
+        public byte var3;
+        public byte var4;
+        public ScriptRegistrations()
+        {
+        }
+
+        public ScriptRegistrations Load(BinaryReader reader)
+        {
+            var0 = reader.ReadArray((x) => x.ReadUInt32());
+            var1 = reader.ReadArray((x) => x.ReadUInt32());
+            var2 = reader.ReadByte();
+            var3 = reader.ReadByte();
+            var4 = reader.ReadByte();
+            return this;
+        }
+        public ScriptRegistrations(BinaryReader reader)
+        {
+            Load(reader);
+        }
+    }
+
+    class SynchronizerAction : IReadable<SynchronizerAction>
+    {
+        public enum ActionType : byte
+        {
+            SimpleSynchronizer_0,
+            PeerDisconnect,
+            NewPeerInfo,
+            ClientChangedState,
+            ClientShouldStartSendingTickClosures,
+            MapReadyForDownloadAction,
+            ProgressUpdate_6,
+            ProgressUpdate_7,
+            SimpleSynchronizer_8,
+            ProgressUpdate_9,
+            ProgressUpdate_A,
+            ProgressUpdate_B,
+            SimpleSynchronizer_C,
+            SimpleSynchronizer_D,
+            SimpleSynchronizer_E,
+            SkippedTickClosure,
+            SkippedTickClosureConfirm,
+            ChangeLatency,
+            IncreasedLatencyConfirm,
+            SavingCountdown,
+            InputActionFragmentsInFlight,
+            SimpleSynchronizer_15
+        }
+
+        public ActionType Action;
+
+        public SynchronizerAction()
+        {
+        }
+
         public SynchronizerAction(BinaryReader reader)
         {
+            Load(reader);
+        }
 
+        public List<object> Data = new List<object>();
+        public void Add(object a)
+        {
+            Data.Add(a);
+        }
+
+        public SynchronizerAction Load(BinaryReader reader)
+        {
+            Action = (ActionType)reader.ReadByte();
+            switch ((byte)Action)
+            {
+                case 0x00:
+                case 0x08:
+                case 0x0C:
+                case 0x0D:
+                case 0x0E:
+                case 0x15:
+                    break;
+                case 0x01:
+                case 0x03:
+                case 0x06:
+                case 0x07:
+                case 0x09:
+                case 0x11:
+                case 0x0A:
+                case 0x0B:
+                    Add(reader.ReadByte());
+                    break;
+                case 0x02:
+                    Add(reader.ReadComplexString());
+                    break;
+                case 0x04:
+                case 0x0F:
+                case 0x10:
+                case 0x13:
+                    Add(reader.ReadInt32());
+                    break;
+                case 0x05:
+                    Add(reader.ReadInt32());
+                    Add(reader.ReadInt32());
+                    Add(reader.ReadInt32());
+                    Add(reader.ReadInt32());
+                    Add(reader.ReadInt32());
+                    Add(reader.ReadByte());
+                    Add(reader.ReadByte());
+                    Add(reader.ReadArray((x) => Tuple.Create(reader.ReadComplexString(), reader.ReadUInt32()))
+                        .ToDictionary((x) => x.Item1, (y) => y.Item2));
+                    Add(reader.ReadArray((x) => Tuple.Create(reader.ReadComplexString(), new ScriptRegistrations(reader)))
+                        .ToDictionary((x) => x.Item1, (y) => y.Item2));
+                    Add(reader.ReadArray((x) => Tuple.Create(reader.ReadComplexString(), reader.ReadArray((y) => y.ReadComplexString())))
+                        .ToDictionary((x) => x.Item1, (y) => y.Item2));
+                    break;
+                case 0x12:
+                    Add(reader.ReadInt32());
+                    Add(reader.ReadByte());
+                    break;
+                case 0x14:
+                    Add(reader.ReadInt32());
+                    Add(reader.ReadInt32());
+                    break;
+                default:
+                    throw new Exception($"No such SynchronizerAction: 0x{Action:x2}");
+            }
+            return this;
         }
     }
 
@@ -1198,7 +1331,7 @@ namespace FactorioNetParser.FactorioNet.Messages
         public byte DeserializationMask;
         public int SequenceNumber;
         public TickClosure[] TickClosures;
-        public SynchronizerAction[] SynchronizerActions;
+        public Tuple<SynchronizerAction, uint>[] SynchronizerActions;
         public uint[] RequestsForHeartbeat;
 
         public ServerToClientHeartbeatMessage Load(BinaryReader reader)
@@ -1215,24 +1348,18 @@ namespace FactorioNetParser.FactorioNet.Messages
                 }
                 else
                 {
-                    TickClosures = new TickClosure[reader.ReadVarInt()];
-                    for (var i = 0; i < TickClosures.Length; i++)
-                        TickClosures[i] = new TickClosure(reader, loadTickOnly);
+                    TickClosures = reader.ReadArray((x) => new TickClosure(x, loadTickOnly));
                 }
             }
 
             if ((DeserializationMask & 0x10) > 0)
             {
-                SynchronizerActions = new SynchronizerAction[reader.ReadVarInt()];
-                for (var i = 0; i < SynchronizerActions.Length; i++)
-                    SynchronizerActions[i] = new SynchronizerAction(reader);
+                SynchronizerActions = reader.ReadArray((x) => Tuple.Create(new SynchronizerAction(x), x.ReadUInt32()));
             }
 
             if ((DeserializationMask & 0x01) > 0)
             {
-                RequestsForHeartbeat = new uint[reader.ReadVarInt()];
-                for (var i = 0; i < RequestsForHeartbeat.Length; i++)
-                    RequestsForHeartbeat[i] = reader.ReadUInt32();
+                RequestsForHeartbeat = reader.ReadArray((x) => x.ReadUInt32());
             }
             return this;
         }
