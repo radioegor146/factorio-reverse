@@ -95,5 +95,20 @@ namespace FactorioNetParser.FactorioNet
             return array;
         }
 
+        public static T[] ReadSimpleArray<T>(this BinaryReader stream) where T : IReadable<T>, new()
+        {
+            var array = new T[stream.ReadVarShort()];
+            for (var i = 0; i < array.Length; i++)
+                array[i] = new T().Load(stream);
+            return array;
+        }
+
+        public static T[] ReadSimpleArray<T>(this BinaryReader stream, GetFromStream<T> read)
+        {
+            var array = new T[stream.ReadVarShort()];
+            for (var i = 0; i < array.Length; i++)
+                array[i] = read(stream);
+            return array;
+        }
     }
 }
