@@ -1,0 +1,11 @@
+c:\users\radioegor146\source\repos\TempAApp\TempAApp\bin\Debug\TempAApp.exe.config
+c:\users\radioegor146\source\repos\TempAApp\TempAApp\bin\Debug\TempAApp.exe
+c:\users\radioegor146\source\repos\TempAApp\TempAApp\bin\Debug\TempAApp.pdb
+c:\users\radioegor146\source\repos\TempAApp\TempAApp\obj\Debug\TempAApp.csprojAssemblyReference.cache
+c:\users\radioegor146\source\repos\TempAApp\TempAApp\obj\Debug\TempAApp.csproj.CoreCompileInputs.cache
+c:\users\radioegor146\source\repos\TempAApp\TempAApp\obj\Debug\TempAApp.exe
+c:\users\radioegor146\source\repos\TempAApp\TempAApp\obj\Debug\TempAApp.pdb
+c:\users\radioegor146\source\repos\TempAApp\TempAApp\bin\Debug\nunit.framework.dll
+c:\users\radioegor146\source\repos\TempAApp\TempAApp\bin\Debug\PcapngUtils.dll
+c:\users\radioegor146\source\repos\TempAApp\TempAApp\bin\Debug\nunit.framework.xml
+c:\users\radioegor146\source\repos\TempAApp\TempAApp\obj\Debug\TempAApp.csproj.CopyComplete
