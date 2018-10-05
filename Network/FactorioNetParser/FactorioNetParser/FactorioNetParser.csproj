@@ -53,6 +53,7 @@
     <Compile Include="FactorioNet\FactorioServerApi.cs" />
     <Compile Include="FactorioNet\IReadable.cs" />
     <Compile Include="FactorioNet\Messages\Classes.cs" />
+    <Compile Include="FactorioNet\Messages\ClientToServerHeartbeatMessage.cs" />
     <Compile Include="FactorioNet\Messages\ServerToClientHeartbeatMessage.cs" />
     <Compile Include="FactorioNet\Reader.cs" />
     <Compile Include="Program.cs" />
