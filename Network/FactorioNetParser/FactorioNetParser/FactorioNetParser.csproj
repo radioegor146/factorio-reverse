@@ -54,8 +54,10 @@
     <Compile Include="FactorioNet\IReadable.cs" />
     <Compile Include="FactorioNet\Messages\Classes.cs" />
     <Compile Include="FactorioNet\Messages\ClientToServerHeartbeatMessage.cs" />
+    <Compile Include="FactorioNet\Messages\Packets.cs" />
     <Compile Include="FactorioNet\Messages\ServerToClientHeartbeatMessage.cs" />
     <Compile Include="FactorioNet\Reader.cs" />
+    <Compile Include="IWritable.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
