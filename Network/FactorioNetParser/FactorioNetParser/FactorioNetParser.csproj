@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NUnit.3.12.0\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.12.0\build\NUnit.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -11,6 +12,8 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,17 +35,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.6.7\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.12.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="PcapngUtils, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\PcapngUtils.1.0.7\lib\net45\PcapngUtils.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,22 +62,92 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FactorioNet\FactorioNetMessage.cs" />
-    <Compile Include="FactorioNet\FactorioNetMessageBundle.cs" />
-    <Compile Include="FactorioNet\FactorioServerApi.cs" />
-    <Compile Include="FactorioNet\IReadable.cs" />
-    <Compile Include="FactorioNet\Messages\Classes.cs" />
-    <Compile Include="FactorioNet\Messages\ClientToServerHeartbeatMessage.cs" />
-    <Compile Include="FactorioNet\Messages\Packets.cs" />
+    <Compile Include="FactorioNet\Data\AddBlueprintRecordData.cs" />
+    <Compile Include="FactorioNet\Data\AdminAction.cs" />
+    <Compile Include="FactorioNet\Data\ArithmeticCombinatorParameters.cs" />
+    <Compile Include="FactorioNet\Data\BlueprintRecordId.cs" />
+    <Compile Include="FactorioNet\Data\BoundingBox.cs" />
+    <Compile Include="FactorioNet\Data\BuildRailData.cs" />
+    <Compile Include="FactorioNet\Data\BuildTerrainParameters.cs" />
+    <Compile Include="FactorioNet\Data\ChooseElemId.cs" />
+    <Compile Include="FactorioNet\Data\CircuitCondition.cs" />
+    <Compile Include="FactorioNet\Data\Client.cs" />
+    <Compile Include="FactorioNet\Data\DeciderCombinatorParameters.cs" />
+    <Compile Include="FactorioNet\Data\Direction.cs" />
+    <Compile Include="FactorioNet\Data\EditPermissionGroupParameters.cs" />
+    <Compile Include="FactorioNet\Data\ExtendedBitBuffer.cs" />
+    <Compile Include="FactorioNet\Data\GuiChangedData.cs" />
+    <Compile Include="FactorioNet\Data\ImportBlueprintStringData.cs" />
+    <Compile Include="FactorioNet\Data\InfinityContainerFilterItemData.cs" />
+    <Compile Include="FactorioNet\Data\InputAction.cs" />
+    <Compile Include="FactorioNet\Data\InputActionSegment.cs" />
+    <Compile Include="FactorioNet\Data\InputActionType.cs" />
+    <Compile Include="FactorioNet\Data\InputActionTypeExtensions.cs" />
+    <Compile Include="FactorioNet\Data\ItemStackTargetSpecification.cs" />
+    <Compile Include="FactorioNet\Data\ListItem.cs" />
+    <Compile Include="FactorioNet\Data\MapPosition.cs" />
+    <Compile Include="FactorioNet\Data\ModInfo.cs" />
+    <Compile Include="FactorioNet\Data\ModSetting.cs" />
+    <Compile Include="FactorioNet\Data\MultiplayerConfigSettings.cs" />
+    <Compile Include="FactorioNet\Data\PlayerJoinGameData.cs" />
+    <Compile Include="FactorioNet\Data\ProgrammableSpeakerAlertParameters.cs" />
+    <Compile Include="FactorioNet\Data\RealOrientation.cs" />
+    <Compile Include="FactorioNet\Data\RidingState.cs" />
+    <Compile Include="FactorioNet\Data\ScriptRegistrations.cs" />
+    <Compile Include="FactorioNet\Data\SelectMapperSlotParameters.cs" />
+    <Compile Include="FactorioNet\Data\SetupBlueprintData.cs" />
+    <Compile Include="FactorioNet\Data\SignalId.cs" />
+    <Compile Include="FactorioNet\Data\SingleRecordDataInBook.cs" />
+    <Compile Include="FactorioNet\Data\SynchronizerAction.cs" />
+    <Compile Include="FactorioNet\Data\SynchronizerActionType.cs" />
+    <Compile Include="FactorioNet\Data\TickClosure.cs" />
+    <Compile Include="FactorioNet\Data\TilePosition.cs" />
+    <Compile Include="FactorioNet\Data\TrainWaitCondition.cs" />
+    <Compile Include="FactorioNet\Data\TrainWaitConditionData.cs" />
+    <Compile Include="FactorioNet\Data\UpdateBlueprintData.cs" />
+    <Compile Include="FactorioNet\Data\UpdateBlueprintShelfData.cs" />
+    <Compile Include="FactorioNet\Data\Vector.cs" />
+    <Compile Include="FactorioNet\Data\Version.cs" />
+    <Compile Include="FactorioNet\Messages\ConnectionAcceptOrDenyMessage.cs" />
+    <Compile Include="FactorioNet\Messages\ConnectionRequestMessage.cs" />
+    <Compile Include="FactorioNet\Messages\ConnectionRequestReplyConfirmMessage.cs" />
+    <Compile Include="FactorioNet\Messages\ConnectionRequestReplyMessage.cs" />
+    <Compile Include="FactorioNet\Messages\EmptyMessage.cs" />
+    <Compile Include="FactorioNet\Messages\GameInformationRequestMessage.cs" />
+    <Compile Include="FactorioNet\IMessage.cs" />
+    <Compile Include="FactorioNet\Messages\LanBroadcastMessage.cs" />
+    <Compile Include="FactorioNet\Messages\PingMessage.cs" />
+    <Compile Include="FactorioNet\Messages\PingReplyMessage.cs" />
+    <Compile Include="FactorioNet\Messages\RequestForHeartbeatWhenDisconnectingMessage.cs" />
     <Compile Include="FactorioNet\Messages\ServerToClientHeartbeatMessage.cs" />
-    <Compile Include="FactorioNet\Reader.cs" />
-    <Compile Include="IWritable.cs" />
+    <Compile Include="FactorioNet\Messages\TransferBlockMessage.cs" />
+    <Compile Include="FactorioNet\Messages\TransferBlockRequestMessage.cs" />
+    <Compile Include="FactorioNet\MessageType.cs" />
+    <Compile Include="FactorioNet\NetworkMessage.cs" />
+    <Compile Include="FactorioNet\NetworkMessageBundle.cs" />
+    <Compile Include="FactorioNet\IReadable.cs" />
+    <Compile Include="FactorioNet\Messages\ClientToServerHeartbeatMessage.cs" />
+    <Compile Include="FactorioNet\Data\AddressToUsernameMapping.cs" />
+    <Compile Include="FactorioNet\Data\PixelPosition.cs" />
+    <Compile Include="FactorioNet\IOExtensions.cs" />
+    <Compile Include="FactorioNet\IWritable.cs" />
+    <Compile Include="FactorioNet\NetworkClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="NLog.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="FactorioNet\Pipeline\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\NUnit.3.12.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.12.0\build\NUnit.props'))" />
+  </Target>
 </Project>

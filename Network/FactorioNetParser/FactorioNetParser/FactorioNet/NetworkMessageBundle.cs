@@ -4,14 +4,14 @@ using System.Linq;
 
 namespace FactorioNetParser.FactorioNet
 {
-    internal class FactorioNetMessageBundle
+    internal class NetworkMessageBundle
     {
-        private readonly SortedList<short, FactorioNetMessage> bundleMessages =
-            new SortedList<short, FactorioNetMessage>();
+        private readonly SortedList<ushort, NetworkMessage> bundleMessages =
+            new SortedList<ushort, NetworkMessage>();
 
         private int needCount = -1;
 
-        public bool HandleBundleMessage(FactorioNetMessage message)
+        public bool HandleBundleMessage(NetworkMessage message)
         {
             if (needCount == bundleMessages.Count)
                 return true;
@@ -22,20 +22,20 @@ namespace FactorioNetParser.FactorioNet
             return needCount == bundleMessages.Count;
         }
 
-        public FactorioNetMessage GetOverallMessage()
+        public NetworkMessage GetOverallMessage()
         {
             if (needCount != bundleMessages.Count)
                 return null;
-            var overallsize = bundleMessages.Values.Sum(netmsg => netmsg.PacketBytes.Length);
+            var overallsize = bundleMessages.Values.Sum(netmsg => netmsg.MessageDataBytes.Length);
             var bytes = new byte[overallsize];
             var arrayptr = 0;
             foreach (var netmsg in bundleMessages.Values)
             {
-                Array.Copy(netmsg.PacketBytes, 0, bytes, arrayptr, netmsg.PacketBytes.Length);
-                arrayptr += netmsg.PacketBytes.Length;
+                Array.Copy(netmsg.MessageDataBytes, 0, bytes, arrayptr, netmsg.MessageDataBytes.Length);
+                arrayptr += netmsg.MessageDataBytes.Length;
             }
 
-            return new FactorioNetMessage(bundleMessages.First().Value.Type, bytes);
+            return new NetworkMessage(bundleMessages.First().Value.Type, bytes);
         }
     }
 }

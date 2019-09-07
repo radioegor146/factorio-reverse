@@ -3,7 +3,7 @@ using System.Text;
 
 namespace FactorioNetParser.FactorioNet
 {
-    public static class Reader
+    public static class IOExtensions
     {
         public delegate T GetFromStream<out T>(BinaryReader reader);
 
