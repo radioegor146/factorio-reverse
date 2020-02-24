@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class RealOrientation : IReadable<RealOrientation>
+    internal class RealOrientation : IReadable<RealOrientation>, IWritable<RealOrientation>
     {
         public float Orientation;
 
@@ -17,6 +17,11 @@ namespace FactorioNetParser.FactorioNet.Data
         {
             Orientation = reader.ReadSingle();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(Orientation);
         }
     }
 }
