@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class BoundingBox : IReadable<BoundingBox>
+    internal class BoundingBox : IReadable<BoundingBox>, IWritable<BoundingBox>
     {
         public PixelPosition LeftTop;
         public PixelPosition RightBottom;
@@ -21,6 +21,13 @@ namespace FactorioNetParser.FactorioNet.Data
             RightBottom = new PixelPosition(reader);
             Orientation = new RealOrientation(reader);
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            LeftTop.Write(writer);
+            RightBottom.Write(writer);
+            Orientation.Write(writer);
         }
     }
 }
