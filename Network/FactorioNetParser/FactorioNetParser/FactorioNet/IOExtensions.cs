@@ -74,7 +74,7 @@ namespace FactorioNetParser.FactorioNet
             return Encoding.UTF8.GetString(data);
         }
 
-        public static void WriteString(this BinaryWriter stream, string data)
+        public static void WriteFactorioString(this BinaryWriter stream, string data)
         {
             var dt = Encoding.UTF8.GetBytes(data);
             WriteVarInt(stream, dt.Length);

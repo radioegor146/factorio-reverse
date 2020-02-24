@@ -60,7 +60,7 @@ namespace FactorioNetParser.FactorioNet.Data
                 case 2:
                 case 3:
                 case 4:
-                    writer.WriteString(Name);
+                    writer.WriteFactorioString(Name);
                     break;
                 default:
                     throw new IOException("Wrong setting type");
@@ -78,7 +78,7 @@ namespace FactorioNetParser.FactorioNet.Data
                     writer.Write((long) Value);
                     break;
                 case 4:
-                    writer.WriteString((string) Value);
+                    writer.WriteFactorioString((string) Value);
                     break;
                 default:
                     throw new IOException("Wrong setting type");
