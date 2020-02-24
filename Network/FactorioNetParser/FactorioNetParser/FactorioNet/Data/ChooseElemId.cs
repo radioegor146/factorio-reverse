@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class ChooseElemId : IReadable<ChooseElemId>
+    internal class ChooseElemId : IReadable<ChooseElemId>, IWritable<ChooseElemId>
     {
         public ushort EntityId;
         public ushort FluidId;
@@ -27,6 +27,16 @@ namespace FactorioNetParser.FactorioNet.Data
             RecipeId = reader.ReadUInt16();
             SignalId = new SignalId(reader);
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(ItemId);
+            writer.Write(EntityId);
+            writer.Write(TileId);
+            writer.Write(FluidId);
+            writer.Write(RecipeId);
+            SignalId.Write(writer);
         }
     }
 }
