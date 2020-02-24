@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class AdminAction : IReadable<AdminAction>
+    internal class AdminAction : IReadable<AdminAction>, IWritable<AdminAction>
     {
         public ushort PlayerId;
         public string Username;
@@ -23,6 +23,14 @@ namespace FactorioNetParser.FactorioNet.Data
             NewGroupId = reader.ReadUInt32();
             Action = reader.ReadByte();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(PlayerId);
+            writer.WriteFactorioString(Username);
+            writer.Write(NewGroupId);
+            writer.Write(Action);
         }
     }
 }
