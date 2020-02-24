@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class BuildRailData : IReadable<BuildRailData>
+    internal class BuildRailData : IReadable<BuildRailData>, IWritable<BuildRailData>
     {
         public bool AlternativeBuild;
         public ExtendedBitBuffer Buffer;
@@ -27,6 +27,16 @@ namespace FactorioNetParser.FactorioNet.Data
             Buffer = new ExtendedBitBuffer(reader);
             AlternativeBuild = reader.ReadBoolean();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(Mode);
+            writer.Write(StartX);
+            writer.Write(StartY);
+            Direction.Write(writer);
+            Buffer.Write(writer);
+            writer.Write(AlternativeBuild);
         }
     }
 }
