@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class ArithmeticCombinatorParameters : IReadable<ArithmeticCombinatorParameters>
+    internal class ArithmeticCombinatorParameters : IReadable<ArithmeticCombinatorParameters>, IWritable<ArithmeticCombinatorParameters>
     {
         public int FirstConstant;
         public SignalId FirstSignalId;
@@ -31,6 +31,18 @@ namespace FactorioNetParser.FactorioNet.Data
             FirstConstant = reader.ReadInt32();
             FirstSignalIsConstant = reader.ReadBoolean();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            FirstSignalId.Write(writer);
+            SecondSignalId.Write(writer);
+            OutputSignalId.Write(writer);
+            writer.Write(SecondConstant);
+            writer.Write(Operation);
+            writer.Write(SecondSignalIsConstant);
+            writer.Write(FirstConstant);
+            writer.Write(FirstSignalIsConstant);
         }
     }
 }
