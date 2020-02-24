@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class AddBlueprintRecordData : IReadable<AddBlueprintRecordData>
+    internal class AddBlueprintRecordData : IReadable<AddBlueprintRecordData>, IWritable<AddBlueprintRecordData>
     {
         public uint AddInBook;
         public SignalId[] BlueprintIcons;
@@ -32,6 +32,20 @@ namespace FactorioNetParser.FactorioNet.Data
             if (IsBook)
                 PreviewsInBook = reader.ReadArray<SingleRecordDataInBook>();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(Id);
+            writer.Write(Hash);
+            writer.Write(ItemId);
+            writer.Write(IsBook);
+            writer.WriteArray(BlueprintIcons);
+            writer.WriteFactorioString(Label);
+            writer.Write(AddInBook);
+            if (IsBook)
+                writer.WriteArray(PreviewsInBook);
+            throw new System.NotImplementedException();
         }
     }
 }
