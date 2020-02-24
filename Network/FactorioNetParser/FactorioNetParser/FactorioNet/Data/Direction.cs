@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class Direction : IReadable<Direction>
+    internal class Direction : IReadable<Direction>, IWritable<Direction>
     {
         public byte Value;
 
@@ -17,6 +17,11 @@ namespace FactorioNetParser.FactorioNet.Data
         {
             Value = reader.ReadByte();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(Value);
         }
     }
 }
