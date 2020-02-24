@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class BlueprintRecordId : IReadable<BlueprintRecordId>
+    internal class BlueprintRecordId : IReadable<BlueprintRecordId>, IWritable<BlueprintRecordId>
     {
         public uint Id;
         public ushort PlayerIndex;
@@ -19,6 +19,12 @@ namespace FactorioNetParser.FactorioNet.Data
             PlayerIndex = reader.ReadUInt16();
             Id = reader.ReadUInt32();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(PlayerIndex);
+            writer.Write(Id);
         }
     }
 }
