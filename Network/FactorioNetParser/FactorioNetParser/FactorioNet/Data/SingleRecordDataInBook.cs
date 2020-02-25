@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class SingleRecordDataInBook : IReadable<SingleRecordDataInBook>
+    internal class SingleRecordDataInBook : IReadable<SingleRecordDataInBook>, IWritable<SingleRecordDataInBook>
     {
         public SignalId[] BlueprintIcons;
         public byte[] Hash = new byte[20];
@@ -26,6 +26,16 @@ namespace FactorioNetParser.FactorioNet.Data
             BlueprintIcons = reader.ReadArray<SignalId>();
             Label = reader.ReadFactorioString();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(Id);
+            writer.Write(ItemId);
+
+            writer.Write(Hash);
+            writer.WriteArray(BlueprintIcons);
+            writer.WriteFactorioString(Label);
         }
     }
 }

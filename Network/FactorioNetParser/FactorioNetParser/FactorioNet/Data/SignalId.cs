@@ -3,7 +3,7 @@ using System.IO;
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class SignalId : IReadable<SignalId>
+    internal class SignalId : IReadable<SignalId>, IWritable<SignalId>
     {
         public byte ContainedType;
         public ushort FluidId;
@@ -36,6 +36,25 @@ namespace FactorioNetParser.FactorioNet.Data
             }
 
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(ContainedType);
+            switch (ContainedType)
+            {
+                case 0:
+                    writer.Write(ItemId);
+                    break;
+                case 1:
+                    writer.Write(FluidId);
+                    break;
+                case 2:
+                    writer.Write(VirtualSignalId);
+                    break;
+                default:
+                    throw new Exception($"Invalid SignalId type: {ContainedType}");
+            }
         }
     }
 }

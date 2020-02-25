@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class CircuitCondition : IReadable<CircuitCondition>
+    internal class CircuitCondition : IReadable<CircuitCondition>, IWritable<CircuitCondition>
     {
         public byte Comparator;
         public SignalId FirstSignalId;
@@ -25,6 +25,15 @@ namespace FactorioNetParser.FactorioNet.Data
             SecondConstant = reader.ReadInt32();
             SecondItemIsConstant = reader.ReadBoolean();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(Comparator);
+            FirstSignalId.Write(writer);
+            SecondSignalId.Write(writer);
+            writer.Write(SecondConstant);
+            writer.Write(SecondItemIsConstant);
         }
     }
 }

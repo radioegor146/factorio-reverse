@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class AddressToUsernameMapping : IReadable<AddressToUsernameMapping>
+    internal class AddressToUsernameMapping : IReadable<AddressToUsernameMapping>, IWritable<AddressToUsernameMapping>
     {
         public string Address;
         public string Username;
@@ -19,6 +19,12 @@ namespace FactorioNetParser.FactorioNet.Data
             Address = reader.ReadFactorioString();
             Username = reader.ReadFactorioString();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.WriteFactorioString(Address);
+            writer.WriteFactorioString(Username);
         }
     }
 }

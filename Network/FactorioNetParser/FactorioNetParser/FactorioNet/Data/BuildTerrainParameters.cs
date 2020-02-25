@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class BuildTerrainParameters : IReadable<BuildTerrainParameters>
+    internal class BuildTerrainParameters : IReadable<BuildTerrainParameters>, IWritable<BuildTerrainParameters>
     {
         public bool CreatedByMoving;
         public bool GhostMode;
@@ -23,6 +23,14 @@ namespace FactorioNetParser.FactorioNet.Data
             GhostMode = reader.ReadBoolean();
             SkipFogOfWar = reader.ReadBoolean();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(CreatedByMoving);
+            writer.Write(Size);
+            writer.Write(GhostMode);
+            writer.Write(SkipFogOfWar);
         }
     }
 }

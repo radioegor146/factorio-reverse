@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class ExtendedBitBuffer : IReadable<ExtendedBitBuffer>
+    internal class ExtendedBitBuffer : IReadable<ExtendedBitBuffer>, IWritable<ExtendedBitBuffer>
     {
         public uint Bits;
         public uint[] Data;
@@ -23,6 +23,20 @@ namespace FactorioNetParser.FactorioNet.Data
             if ((tValue & 0x1F) > 0)
                 Bits = reader.ReadUInt32();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            var tValue = Data.Length << 5;
+            if (Bits > 0)
+                tValue |= 0x1F;
+            writer.Write(tValue);
+            for (var i = 0; i < Data.Length; i++)
+                writer.Write(Data[i]);
+            if (Bits > 0)
+            {
+                writer.Write(Bits);
+            }
         }
     }
 }
