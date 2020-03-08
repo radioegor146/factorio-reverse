@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class TrainWaitCondition : IReadable<TrainWaitCondition>
+    internal class TrainWaitCondition : IReadable<TrainWaitCondition>, IWritable<TrainWaitCondition>
     {
         public byte Action;
         public byte AddType;
@@ -23,6 +23,14 @@ namespace FactorioNetParser.FactorioNet.Data
             ScheldueIndex = reader.ReadUInt32();
             ConditionIndex = reader.ReadUInt32();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(Action);
+            writer.Write(AddType);
+            writer.Write(ScheldueIndex);
+            writer.Write(ConditionIndex);
         }
     }
 }
