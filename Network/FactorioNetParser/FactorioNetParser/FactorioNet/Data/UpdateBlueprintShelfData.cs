@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class UpdateBlueprintShelfData : IReadable<UpdateBlueprintShelfData>
+    internal class UpdateBlueprintShelfData : IReadable<UpdateBlueprintShelfData>, IWritable<UpdateBlueprintShelfData>
     {
         public uint NextRecordId;
         public AddBlueprintRecordData[] RecordsToAdd;
@@ -27,6 +27,16 @@ namespace FactorioNetParser.FactorioNet.Data
             RecordsToAdd = reader.ReadArray<AddBlueprintRecordData>();
             RecordsToUpdate = reader.ReadArray<UpdateBlueprintData>();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(ShelfPlayerIndex);
+            writer.Write(NextRecordId);
+            writer.Write(Timestamp);
+            writer.WriteArray(RecordsToRemove, (stream, data) => stream.Write(data));
+            writer.WriteArray(RecordsToAdd);
+            writer.WriteArray(RecordsToUpdate);
         }
     }
 }
