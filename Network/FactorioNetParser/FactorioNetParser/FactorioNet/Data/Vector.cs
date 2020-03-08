@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class Vector : IReadable<Vector>
+    internal class Vector : IReadable<Vector>, IWritable<Vector>
     {
         public double X;
         public double Y;
@@ -19,6 +19,12 @@ namespace FactorioNetParser.FactorioNet.Data
             X = reader.ReadDouble();
             Y = reader.ReadDouble();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(X);
+            writer.Write(Y);
         }
     }
 }
