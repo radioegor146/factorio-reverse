@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class ScriptRegistrations : IReadable<ScriptRegistrations>
+    internal class ScriptRegistrations : IReadable<ScriptRegistrations>, IWritable<ScriptRegistrations>
     {
         public uint[] StandardEvents;
         public uint[] NthTickEvents;
@@ -25,6 +25,15 @@ namespace FactorioNetParser.FactorioNet.Data
             OnLoad = reader.ReadByte();
             OnConfigurationChanged = reader.ReadByte();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.WriteArray(StandardEvents, (stream, data) => stream.Write(data));
+            writer.WriteArray(StandardEvents, (stream, data) => stream.Write(data));
+            writer.Write(OnInit);
+            writer.Write(OnLoad);
+            writer.Write(OnConfigurationChanged);
         }
     }
 }
