@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class UpdateBlueprintData : IReadable<UpdateBlueprintData>
+    internal class UpdateBlueprintData : IReadable<UpdateBlueprintData>, IWritable<UpdateBlueprintData>
     {
         public ushort Id;
         public byte[] NewHash = new byte[20];
@@ -21,6 +21,13 @@ namespace FactorioNetParser.FactorioNet.Data
             NewHash = reader.ReadBytes(20);
             NewLabel = reader.ReadFactorioString();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(Id);
+            writer.Write(NewHash);
+            writer.WriteFactorioString(NewLabel);
         }
     }
 }
