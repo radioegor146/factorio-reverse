@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class EditPermissionGroupParameters : IReadable<EditPermissionGroupParameters>
+    internal class EditPermissionGroupParameters : IReadable<EditPermissionGroupParameters>, IWritable<EditPermissionGroupParameters>
     {
         public byte ActionIndex;
         public int GroupId;
@@ -25,6 +25,15 @@ namespace FactorioNetParser.FactorioNet.Data
             NewGroupName = reader.ReadFactorioString();
             Type = reader.ReadByte();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(GroupId);
+            writer.Write(PlayerIndex);
+            writer.Write(ActionIndex);
+            writer.WriteFactorioString(NewGroupName);
+            writer.Write(Type);
         }
     }
 }
