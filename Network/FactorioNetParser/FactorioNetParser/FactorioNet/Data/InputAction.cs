@@ -6,7 +6,7 @@ using Newtonsoft.Json.Converters;
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class InputAction : IReadable<InputAction>
+    internal class InputAction : IReadable<InputAction>, IWritable<InputAction>
     {
         [JsonConverter(typeof(StringEnumConverter))]
         public InputActionType Action;
@@ -709,6 +709,36 @@ namespace FactorioNetParser.FactorioNet.Data
         private void Add(object obj)
         {
             Data.Add(obj);
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write((byte)Action);
+            writer.WriteVarShort(PlayerIndex);
+            foreach (var obj in Data)
+            {
+                if (obj is IWritable<object> writable)
+                    writable.Write(writer);
+                else if (obj is uint uint32)
+                    writer.Write(uint32);
+                else if (obj is byte int8)
+                    writer.Write(int8);
+                else if (obj is ushort uint16)
+                    writer.Write(uint16);
+                else if (obj is ulong uint64)
+                    writer.Write(uint64);
+                else if (obj is string str)
+                {
+                    if (Action == InputActionType.TransferBlueprint
+                        || Action == InputActionType.TransferBlueprintImmediately
+                        || Action == InputActionType.ChangeBlueprintBookRecordLabel)
+                        writer.Write(str);
+                    else
+                        writer.WriteFactorioString(str);
+                }
+                else
+                    throw new Exception($"Unsopported object in Data list: {obj.ToString()}");
+            }
         }
     }
 }
