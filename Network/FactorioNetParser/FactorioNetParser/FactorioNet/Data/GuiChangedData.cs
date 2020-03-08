@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class GuiChangedData : IReadable<GuiChangedData>
+    internal class GuiChangedData : IReadable<GuiChangedData>, IWritable<GuiChangedData>
     {
         public ushort Button;
         public uint GuiElementIndex;
@@ -25,6 +25,15 @@ namespace FactorioNetParser.FactorioNet.Data
             IsControl = reader.ReadBoolean();
             IsShift = reader.ReadBoolean();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(GuiElementIndex);
+            writer.Write(Button);
+            writer.Write(IsAlt);
+            writer.Write(IsControl);
+            writer.Write(IsShift);
         }
     }
 }
