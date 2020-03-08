@@ -140,5 +140,10 @@ namespace FactorioNetParser.FactorioNet
             foreach (var b in data)
                 write(stream, b);
         }
+
+        public static void Write<T>(this BinaryWriter stream, T data) where T : IWritable<T>
+        {
+            data.Write(stream);
+        }
     }
 }
