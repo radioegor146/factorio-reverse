@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class ImportBlueprintStringData : IReadable<ImportBlueprintStringData>
+    internal class ImportBlueprintStringData : IReadable<ImportBlueprintStringData>, IWritable<ImportBlueprintStringData>
     {
         public string StringData;
         public byte ImportType;
@@ -23,6 +23,14 @@ namespace FactorioNetParser.FactorioNet.Data
             TextDisplay = reader.ReadByte();
             FromChat = reader.ReadByte();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.WriteFactorioString(StringData);
+            writer.Write(ImportType);
+            writer.Write(TextDisplay);
+            writer.Write(FromChat);
         }
     }
 }

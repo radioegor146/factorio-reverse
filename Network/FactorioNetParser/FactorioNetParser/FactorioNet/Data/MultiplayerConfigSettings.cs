@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class MultiplayerConfigSettings : IReadable<MultiplayerConfigSettings>
+    internal class MultiplayerConfigSettings : IReadable<MultiplayerConfigSettings>, IWritable<MultiplayerConfigSettings>
     {
         public string Name;
         public string Description;
@@ -66,6 +66,37 @@ namespace FactorioNetParser.FactorioNet.Data
             if (reader.ReadBoolean())
                 Tags = reader.ReadArray(x => x.ReadFactorioString());
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.WriteFactorioString(Name);
+            writer.WriteFactorioString(Description);
+            writer.WriteFactorioString(Password);
+
+            writer.Write(AllowCommands);
+
+            writer.Write(PublicGame);
+            writer.Write(SteamGame);
+            writer.Write(LanGame);
+
+            writer.Write(MaxPlayers);
+
+            writer.Write(AutosaveInterval);
+            writer.Write(AfkAutokickInterval);
+            writer.Write(MaxUploadInKiloBytesPerSecond);
+            writer.Write(MaxUploadSlots);
+
+            writer.Write(AutosaveOnlyOnServer);
+            writer.Write(NonBlockingSaving);
+            writer.Write(IgnorePlayerLimitForReturningPlayers);
+            writer.Write(OnlyAdminsCanPauseTheGame);
+            writer.Write(RequireUserVerification);
+            writer.Write(EnableWhitelist);
+
+            writer.Write(Tags != null);
+            if (Tags != null)
+                writer.WriteArray(Tags, (stream, data) => stream.WriteFactorioString(data));
         }
     }
 }

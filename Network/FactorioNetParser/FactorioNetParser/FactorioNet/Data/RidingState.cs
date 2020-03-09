@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class RidingState : IReadable<RidingState>
+    internal class RidingState : IReadable<RidingState>, IWritable<RidingState>
     {
         public byte AccelerationState;
         public byte Direction;
@@ -19,6 +19,12 @@ namespace FactorioNetParser.FactorioNet.Data
             Direction = reader.ReadByte();
             AccelerationState = reader.ReadByte();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(Direction);
+            writer.Write(AccelerationState);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class ItemStackTargetSpecification : IReadable<ItemStackTargetSpecification>
+    internal class ItemStackTargetSpecification : IReadable<ItemStackTargetSpecification>, IWritable<ItemStackTargetSpecification>
     {
         public byte InventoryIndex;
         public ushort SlotIndex;
@@ -23,6 +23,14 @@ namespace FactorioNetParser.FactorioNet.Data
             Source = reader.ReadByte();
             Target = reader.ReadByte();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(InventoryIndex);
+            writer.Write(SlotIndex);
+            writer.Write(Source);
+            writer.Write(Target);
         }
     }
 }

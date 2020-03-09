@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class InputActionSegment : IReadable<InputActionSegment>
+    internal class InputActionSegment : IReadable<InputActionSegment>, IWritable<InputActionSegment>
     {
         public byte[] Payload;
         public int FragmentNumber;
@@ -32,6 +32,21 @@ namespace FactorioNetParser.FactorioNet.Data
 
             Payload = reader.ReadBytes(reader.ReadVarInt());
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write((byte)Type);
+            if (Type.IsSegmentable())
+            {
+                writer.Write(Id);
+                writer.WriteVarShort(PlayerIndex);
+                writer.WriteVarInt(TotalFragments);
+                writer.WriteVarInt(FragmentNumber);
+            }
+
+            writer.WriteVarInt(Payload.Length);
+            writer.Write(Payload);
         }
     }
 }

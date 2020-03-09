@@ -3,7 +3,7 @@ using System.IO;
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class SelectMapperSlotParameters : IReadable<SelectMapperSlotParameters>
+    internal class SelectMapperSlotParameters : IReadable<SelectMapperSlotParameters>, IWritable<SelectMapperSlotParameters>
     {
         public byte Type;
         public ushort ItemIdIndex;
@@ -30,6 +30,19 @@ namespace FactorioNetParser.FactorioNet.Data
             Index = reader.ReadUInt16();
             IsTo = reader.ReadBoolean();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(Type);
+            if (Type > 1)
+                throw new ArgumentOutOfRangeException($"Invalid UpgradeID type: {Type}");
+            if (Type == 1)
+                writer.Write(ItemIdIndex);
+            else
+                writer.Write(EntityIdIndex);
+            writer.Write(Index);
+            writer.Write(IsTo);
         }
     }
 }

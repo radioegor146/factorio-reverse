@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class PlayerJoinGameData : IReadable<PlayerJoinGameData>
+    internal class PlayerJoinGameData : IReadable<PlayerJoinGameData>, IWritable<PlayerJoinGameData>
     {
         public ushort PeerId;
         public ushort PlayerId;
@@ -27,6 +27,16 @@ namespace FactorioNetParser.FactorioNet.Data
             AsEditor = reader.ReadBoolean();
             Admin = reader.ReadBoolean();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.WriteVarShort((short)PeerId);
+            writer.Write(PlayerId);
+            writer.Write(ForceId);
+            writer.WriteFactorioString(Username);
+            writer.Write(AsEditor);
+            writer.Write(Admin);
         }
     }
 }

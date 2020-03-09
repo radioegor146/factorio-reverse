@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class SetupBlueprintData : IReadable<SetupBlueprintData>
+    internal class SetupBlueprintData : IReadable<SetupBlueprintData>, IWritable<SetupBlueprintData>
     {
         public uint[] ExcludedEntities;
         public uint[] ExcludedTiles;
@@ -34,6 +34,20 @@ namespace FactorioNetParser.FactorioNet.Data
             ExcludedItems = reader.ReadArray(x => x.ReadUInt16());
             Icons = reader.ReadArray<SignalId>();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(IncludeModules);
+            writer.Write(IncludeEntities);
+            writer.Write(IncludeTiles);
+            writer.Write(IncludeStationNames);
+            writer.Write(IncludeTrains);
+
+            writer.WriteArray(ExcludedEntities, (stream, data) => stream.Write(data));
+            writer.WriteArray(ExcludedTiles, (stream, data) => stream.Write(data));
+            writer.WriteArray(ExcludedItems, (stream, data) => stream.Write(data));
+            writer.WriteArray(Icons);
         }
     }
 }

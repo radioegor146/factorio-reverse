@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class ProgrammableSpeakerAlertParameters : IReadable<ProgrammableSpeakerAlertParameters>
+    internal class ProgrammableSpeakerAlertParameters : IReadable<ProgrammableSpeakerAlertParameters>, IWritable<ProgrammableSpeakerAlertParameters>
     {
         public string AlertMessage;
         public SignalId IconSignalId;
@@ -23,6 +23,14 @@ namespace FactorioNetParser.FactorioNet.Data
             IconSignalId = new SignalId(reader);
             AlertMessage = reader.ReadFactorioString();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(ShowAlert);
+            writer.Write(ShowOnMap);
+            writer.Write(IconSignalId);
+            writer.WriteFactorioString(AlertMessage);
         }
     }
 }

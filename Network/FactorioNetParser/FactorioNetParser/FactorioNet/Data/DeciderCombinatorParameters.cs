@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class DeciderCombinatorParameters : IReadable<DeciderCombinatorParameters>
+    internal class DeciderCombinatorParameters : IReadable<DeciderCombinatorParameters>, IWritable<DeciderCombinatorParameters>
     {
         public byte Comparator;
         public bool CopyCountFromInput;
@@ -29,6 +29,17 @@ namespace FactorioNetParser.FactorioNet.Data
             CopyCountFromInput = reader.ReadBoolean();
             SecondSignalIsConstant = reader.ReadBoolean();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            FirstSignalId.Write(writer);
+            SecondSignalId.Write(writer);
+            OutputSignalId.Write(writer);
+            writer.Write(SecondConstant);
+            writer.Write(Comparator);
+            writer.Write(CopyCountFromInput);
+            writer.Write(SecondSignalIsConstant);
         }
     }
 }

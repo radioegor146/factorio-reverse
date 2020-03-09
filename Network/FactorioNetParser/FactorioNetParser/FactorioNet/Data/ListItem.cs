@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class ListItem : IReadable<ListItem>
+    internal class ListItem : IReadable<ListItem>, IWritable<ListItem>
     {
         public string Address;
         public string Reason;
@@ -21,6 +21,13 @@ namespace FactorioNetParser.FactorioNet.Data
             Reason = reader.ReadSimpleString();
             Address = reader.ReadSimpleString();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.WriteSimpleString(Username);
+            writer.WriteSimpleString(Reason);
+            writer.WriteSimpleString(Address);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace FactorioNetParser.FactorioNet.Data
 {
-    internal class InfinityContainerFilterItemData : IReadable<InfinityContainerFilterItemData>
+    internal class InfinityContainerFilterItemData : IReadable<InfinityContainerFilterItemData>, IWritable<InfinityContainerFilterItemData>
     {
         public uint Count;
         public ushort FilterIndex;
@@ -23,6 +23,14 @@ namespace FactorioNetParser.FactorioNet.Data
             FilterIndex = reader.ReadUInt16();
             Count = reader.ReadUInt32();
             return this;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(ItemId);
+            writer.Write(Mode);
+            writer.Write(FilterIndex);
+            writer.Write(Count);
         }
     }
 }
