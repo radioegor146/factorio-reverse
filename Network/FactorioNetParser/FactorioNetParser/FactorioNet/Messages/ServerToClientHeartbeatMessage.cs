@@ -27,6 +27,7 @@ namespace FactorioNetParser.FactorioNet.Messages
         [Flags]
         private enum DeserializationMaskFlags : byte
         {
+            None = 0x00,
             HasRequestsForHeartbeat = 0x01,
             HasTickClosures = 0x02,
             SingleTickClosure = 0x04,
@@ -36,7 +37,7 @@ namespace FactorioNetParser.FactorioNet.Messages
 
         public ServerToClientHeartbeatMessage Load(BinaryReader reader)
         {
-            var deserializationMask = (DeserializationMaskFlags) reader.ReadByte();
+            var deserializationMask = (DeserializationMaskFlags)reader.ReadByte();
             SequenceNumber = reader.ReadInt32();
             if (deserializationMask.HasFlag(DeserializationMaskFlags.HasTickClosures))
             {
@@ -65,7 +66,44 @@ namespace FactorioNetParser.FactorioNet.Messages
 
         public void Write(BinaryWriter writer)
         {
-            throw new NotImplementedException();
+            var mask = DeserializationMaskFlags.None;
+            if (LoadTickOnly)
+                mask |= DeserializationMaskFlags.LoadTickOnly;
+            if (TickClosures.Length == 1)
+                mask |= DeserializationMaskFlags.SingleTickClosure;
+            if (SynchronizerActions != null)
+                mask |= DeserializationMaskFlags.HasSynchronizerActions;
+            if (RequestsForHeartbeat != null)
+                mask |= DeserializationMaskFlags.HasRequestsForHeartbeat;
+            writer.Write((byte)mask);
+            writer.Write(SequenceNumber);
+            if (mask.HasFlag(DeserializationMaskFlags.HasTickClosures))
+            {
+                if (mask.HasFlag(DeserializationMaskFlags.SingleTickClosure))
+                {
+                    writer.Write(TickClosures[0].Item1);
+                    if (!LoadTickOnly)
+                        writer.Write(TickClosures[0].Item2);
+                }
+                else
+                {
+                    writer.WriteArray(TickClosures, (stream, obj) =>
+                    {
+                        stream.Write(obj.Item1);
+                        if (!LoadTickOnly)
+                            stream.Write(obj.Item2);
+                    });
+                }
+            }
+
+            if (mask.HasFlag(DeserializationMaskFlags.HasSynchronizerActions))
+                writer.WriteArray(SynchronizerActions, (stream, obj) =>
+                {
+                    stream.Write(obj.Item1);
+                    stream.Write(obj.Item2);
+                });
+            if (mask.HasFlag(DeserializationMaskFlags.HasRequestsForHeartbeat))
+                writer.WriteArray(RequestsForHeartbeat, (stream, obj) => stream.Write(obj));
         }
     }
 }
