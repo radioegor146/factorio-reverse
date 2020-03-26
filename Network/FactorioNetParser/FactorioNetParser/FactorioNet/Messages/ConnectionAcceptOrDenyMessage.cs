@@ -82,14 +82,29 @@ namespace FactorioNetParser.FactorioNet.Messages
 
         public MessageType GetMessageType() => MessageType.ConnectionAcceptOrDeny;
 
-        private class VarShort : IReadable<VarShort>
+        private class VarShort : IReadable<VarShort>, IWritable<VarShort>
         {
             public short Value;
+
+            public VarShort()
+            {
+
+            }
+
+            public VarShort(short value)
+            {
+                Value = value;
+            }
 
             public VarShort Load(BinaryReader reader)
             {
                 Value = reader.ReadVarShort();
                 return this;
+            }
+
+            public void Write(BinaryWriter writer)
+            {
+                writer.WriteVarShort(Value);
             }
         }
 
@@ -163,7 +178,65 @@ namespace FactorioNetParser.FactorioNet.Messages
 
         public void Write(BinaryWriter writer)
         {
-            
+            writer.Write(ClientRequestId);
+            writer.Write(Status);
+            writer.WriteSimpleString(GameName);
+            writer.WriteSimpleString(ServerHash);
+            writer.WriteSimpleString(Description);
+            writer.Write(Latency);
+            writer.Write(GameId);
+
+            writer.Write(UnknownRead0);
+
+            writer.WriteSimpleString(ServerUsername);
+            writer.Write(MapSavingProgress);
+            writer.WriteSimpleArray(SavingFor.Select(x => new VarShort(x)).ToArray());
+            writer.WriteSimpleArray(Clients);
+
+            writer.Write(FirstSequenceNumberToExpect);
+            writer.Write(FirstSequenceNumberToSend);
+            writer.Write(NewPeerId);
+
+            writer.WriteArray(Mods);
+            writer.WriteArray(ModSettings);
+
+            writer.Write(PausedBy);
+
+            writer.Write(GameId0);
+            writer.Write(UnknownRead1);
+            writer.WriteSimpleString(Name);
+            writer.Write(ApplicationVersion);
+            writer.Write(BuildVersion);
+            writer.WriteFactorioString(ServerDescription);
+            writer.Write(MaxPlayers);
+            writer.Write(GameTimeElapsed);
+            writer.Write(HasPassword);
+            writer.Write(SocketType);
+            writer.WriteFactorioString(HostAddress);
+
+            writer.Write(PublicGame);
+            writer.Write(SteamGame);
+            writer.Write(LanGame);
+            writer.WriteArray(Tags, IOExtensions.WriteSimpleString);
+            writer.WriteFactorioString(ServerUsername1);
+            writer.WriteFactorioString(PasswordHash);
+            writer.Write(AutosaveInterval);
+            writer.Write(AutosaveSlots);
+            writer.Write(AfkAutoKickInterval);
+            writer.Write(AllowCommands);
+            writer.Write(MaxUploadInKilobytesPerSecond);
+            writer.Write(MaxUploadSlots);
+            writer.Write(MinimumLatencyInTicks);
+            writer.Write(IgnorePlayerLimitForReturningPlayers);
+            writer.Write(OnlyAdminsCanPauseTheGame);
+            writer.Write(RequireUserVerification);
+            writer.Write(WhitelistEnabled);
+            writer.WriteArray(Admins);
+            writer.WriteArray(AdminMappings);
+            writer.WriteArray(Whitelist);
+            writer.WriteArray(WhitelistMappings);
+            writer.WriteArray(Banlist);
+            writer.WriteArray(BanlistMappings);
         }
     }
 }
