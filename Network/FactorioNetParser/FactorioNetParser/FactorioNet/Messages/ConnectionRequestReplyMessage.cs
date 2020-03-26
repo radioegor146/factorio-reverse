@@ -28,7 +28,10 @@ namespace FactorioNetParser.FactorioNet.Messages
 
         public void Write(BinaryWriter writer)
         {
-            
+            writer.Write(Version);
+            writer.Write(BuildVersion);
+            writer.Write(ConnectionRequestIdGeneratedOnClient);
+            writer.Write(ConnectionRequestIdGeneratedOnServer);
         }
     }
 }
